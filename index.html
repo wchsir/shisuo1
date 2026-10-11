@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DSE 中文必修範文《師說》終極特訓與溫習大師（Phase 3 終極合體版）</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: false, theme: 'default' });
+    </script>
+    <style>
+        .toast-animate {
+            animation: floatUp 1.5s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-30px); }
+        }
+        .vocab-word {
+            cursor: pointer;
+            color: #4f46e5;
+            font-weight: 700;
+            border-bottom: 2px dotted #818cf8;
+            padding: 0 2px;
+            border-radius: 2px;
+            transition: all 0.2s;
+        }
+        .vocab-word:hover {
+            background-color: #e0e7ff;
+            color: #3730a3;
+        }
+        /* 3D 閃卡翻轉效果 */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+/* ================= 安全版手機 UI 優化 ================= */
+@media (max-width: 768px) {
+  /* 1. 全頁寬度適應手機 */
+  body {
+    padding: 10px !important;
+    background-color: #f8fafc !important;
+    font-size: 16px !important;
+  }
+
+  /* 2. 所有按鈕加大，確保按得了且不重疊 */
+  button, .btn, [onclick] {
+    min-height: 48px !important;
+    font-size: 16px !important;
+    padding: 10px 14px !important;
+    margin: 4px 0 !important;
+    touch-action: manipulation !important;
+    pointer-events: auto !important; /* 強制保持可點擊 */
+  }
+
+  /* 3. 主容器自動適應手機單欄 */
+  div, container, main {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 4. 解決彈窗遮擋點擊的問題 */
+  .modal:not(.active), .popup:not(.active) {
+    display: none !important;
+    pointer-events: none !important; /* 關閉時徹底放棄接收點擊 */
+  }
+}
+
+/* ================= 手機底部導航欄 ================= */
+.mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+.mobile-bottom-nav::-webkit-scrollbar { display: none; }
+.mobile-bottom-nav-inner {
+    display: flex;
+    min-width: max-content;
+    padding: 0 4px;
+}
+.nav-btn {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 6px 12px !important;
+    min-width: 58px;
+    border: none !important;
+    background: transparent !important;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 600;
+    gap: 3px;
+    min-height: 56px !important;
+    margin: 0 !important;
+    transition: color 0.2s;
+    border-radius: 0 !important;
+}
+.nav-btn .icon { font-size: 20px; line-height: 1; display: block; }
+.nav-btn .label { font-size: 10px; line-height: 1.2; }
+.nav-btn.active { color: #4f46e5; }
+
+@media (max-width: 768px) {
+    .mobile-bottom-nav { display: block; }
+    .desktop-tabs { display: none !important; }
+    main { padding-bottom: 72px !important; }
+}
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+
+    <!-- 頂部固定進度條、分數與 Streak 儀表板 -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-md border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">📚</span>
+                <div>
+                    <h1 class="font-bold text-lg text-slate-900 leading-tight">《師說》DSE 全能大師</h1>
+                    <div class="flex items-center gap-2">
+                        <span id="levelBadge" class="text-xs text-indigo-600 font-semibold">稱號：儒家初學者</span>
+                        <span id="streakBadge" class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                            🔥 連勝 <span id="streakCount">1</span> 天
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分數與進度條 -->
+            <div class="flex items-center gap-4 flex-1 max-w-md">
+                <div class="w-full bg-slate-200 rounded-full h-4 overflow-hidden shadow-inner relative">
+                    <div id="progressBar" class="bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-400 h-full transition-all duration-500 w-0"></div>
+                </div>
+                <div class="text-right min-w-[90px]">
+                    <span id="scoreText" class="text-xl font-black text-indigo-600">0</span>
+                    <span class="text-xs text-slate-500"> 分</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 浮動加分提示動畫容器 -->
+    <div id="toastContainer" class="fixed top-20 right-8 z-50 pointer-events-none"></div>
+
+    <!-- 字詞語譯詳細彈窗 Modal -->
+    <div id="wordModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative space-y-4 animate-fade-in">
+            <button onclick="closeWordModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+            <div class="flex items-center gap-3 border-b pb-3 border-slate-100">
+                <span id="modalWord" class="text-2xl font-bold text-indigo-900 font-serif"></span>
+                <span id="modalPos" class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded-full"></span>
+            </div>
+            <div>
+                <h5 class="text-xs text-slate-400 font-bold mb-1">DSE 精準解釋</h5>
+                <p id="modalDef" class="text-slate-800 text-base font-semibold leading-relaxed"></p>
+            </div>
+            <div id="modalNoteBox" class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-xs text-amber-900 space-y-1">
+                <b class="flex items-center gap-1">💡 應試與文言知識提示：</b>
+                <p id="modalNote" class="leading-relaxed"></p>
+            </div>
+            <button onclick="closeWordModal()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition shadow">知道了</button>
+        </div>
+    </div>
+
+    <!-- 歷史人物小知識卡 Modal -->
+    <div id="historianModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
+            <button onclick="closeHistorianModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+            <div class="flex items-center gap-4 border-b pb-3 border-slate-100">
+                <span id="hModalIcon" class="text-4xl"></span>
+                <div>
+                    <h4 id="hModalName" class="text-xl font-bold text-indigo-900 font-serif"></h4>
+                    <span id="hModalPeriod" class="text-xs text-slate-500 font-medium"></span>
+                </div>
+            </div>
+            <div id="hModalDesc" class="text-sm text-slate-700 leading-relaxed space-y-2"></div>
+            <div id="hModalNote" class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-xs text-amber-900">
+                <b>📌 與《師說》的關係：</b>
+                <p id="hModalRel" class="mt-1 leading-relaxed"></p>
+            </div>
+            <button onclick="closeHistorianModal()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition">知道了</button>
+        </div>
+    </div>
+
+    <!-- 一鍵生成筆記：選擇模組 Modal -->
+    <div id="noteSelectModal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden">
+            <div class="bg-indigo-900 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-base flex items-center gap-2">📑 選擇筆記內容</h3>
+                <button onclick="closeNoteSelectModal()" class="text-indigo-200 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="p-5 space-y-3">
+                <p class="text-xs text-slate-500">請選擇想納入筆記的部分：</p>
+                <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100"><input type="checkbox" id="note_zhongxin" checked class="accent-indigo-600 w-4 h-4"><span class="text-sm font-medium text-slate-800">📌 中心論點與老師職責</span></label>
+                <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100"><input type="checkbox" id="note_duibi" checked class="accent-indigo-600 w-4 h-4"><span class="text-sm font-medium text-slate-800">⚖️ 三組對比論證（完整版）</span></label>
+                <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100"><input type="checkbox" id="note_wenyan" checked class="accent-indigo-600 w-4 h-4"><span class="text-sm font-medium text-slate-800">📝 文言知識（通假、活用、句式）</span></label>
+                <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100"><input type="checkbox" id="note_xiuci" checked class="accent-indigo-600 w-4 h-4"><span class="text-sm font-medium text-slate-800">✏️ 修辭與論證手法</span></label>
+                <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100"><input type="checkbox" id="note_moji" checked class="accent-indigo-600 w-4 h-4"><span class="text-sm font-medium text-slate-800">✍️ 默書必背金句（15句）</span></label>
+                <label class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100"><input type="checkbox" id="note_zuozhe" class="accent-indigo-600 w-4 h-4"><span class="text-sm font-medium text-slate-800">👤 作者背景與古文運動</span></label>
+            </div>
+            <div class="p-4 bg-slate-100 border-t flex gap-3">
+                <button onclick="generateSelectedNotes()" class="flex-1 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700">📋 生成筆記</button>
+                <button onclick="closeNoteSelectModal()" class="px-4 py-2.5 bg-slate-300 text-slate-700 text-sm font-bold rounded-lg hover:bg-slate-400">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI 一鍵筆記 Modal (Phase 3) -->
+    <div id="aiNoteModal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="bg-indigo-900 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg flex items-center gap-2">📑 DSE《師說》考前極速精華筆記</h3>
+                <button onclick="closeAINoteModal()" class="text-indigo-200 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div id="aiNoteContent" class="p-6 overflow-y-auto space-y-4 text-sm text-slate-800 leading-relaxed font-sans">
+                <!-- 動態注入筆記內容 -->
+            </div>
+            <div class="p-4 bg-slate-100 border-t flex justify-end gap-3">
+                <button onclick="window.print()" class="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700">🖨️ 列印/儲存 PDF</button>
+                <button onclick="closeAINoteModal()" class="px-4 py-2 bg-slate-300 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-400">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-6xl mx-auto px-4 py-6">
+
+        <!-- 💡 每日溫習建議 Widget -->
+        <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-5 rounded-2xl border border-amber-200/80 shadow-sm mb-6 space-y-3">
+            <div class="flex items-center justify-between border-b border-amber-200/60 pb-2.5">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">💡</span>
+                    <h3 class="font-bold text-amber-900 text-base">每日溫習建議指引</h3>
+                </div>
+                <span class="text-xs font-semibold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full">高效備考 4 步走</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                <div class="p-3 bg-white/80 rounded-xl border border-amber-100 space-y-1 shadow-2xs">
+                    <div class="font-bold text-amber-900 text-sm">📌 建議一：精讀 1-2 段</div>
+                    <div class="text-slate-600 leading-relaxed">理解「傳道受業解惑」職責與「道之所存，師之所存」核心擇師標準。</div>
+                </div>
+                <div class="p-3 bg-white/80 rounded-xl border border-amber-100 space-y-1 shadow-2xs">
+                    <div class="font-bold text-amber-900 text-sm">📌 建議二：攻克 3-5 段</div>
+                    <div class="text-slate-600 leading-relaxed">梳理韓愈提出的「三組對比」，理解士大夫恥於從師的風氣批判。</div>
+                </div>
+                <div class="p-3 bg-white/80 rounded-xl border border-amber-100 space-y-1 shadow-2xs">
+                    <div class="font-bold text-amber-900 text-sm">📌 建議三：研讀 6-7 段</div>
+                    <div class="text-slate-600 leading-relaxed">熟記「聖人無常師」孔子例證與「術業有專攻」，掌握寫作緣由。</div>
+                </div>
+                <div class="p-3 bg-white/80 rounded-xl border border-amber-100 space-y-1 shadow-2xs">
+                    <div class="font-bold text-amber-900 text-sm">📌 建議四：測驗與閃卡</div>
+                    <div class="text-slate-600 leading-relaxed">抽卡複習記憶點、挑戰選擇題與默寫，或尋找 AI 韓愈解答疑難。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 導航分頁 -->
+        <div class="desktop-tabs flex border-b border-slate-200 mb-6 gap-2 overflow-x-auto pb-1">
+            <button onclick="switchTab('tab-study')" id="btn-study" class="tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-indigo-600 text-indigo-600 bg-indigo-50/50 flex items-center gap-1.5 whitespace-nowrap">📘 課文語譯</button>
+            <button onclick="switchTab('tab-author')" id="btn-author" class="tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 whitespace-nowrap">👤 作者與背景</button>
+            <button onclick="switchTab('tab-quiz')" id="btn-quiz" class="tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 whitespace-nowrap">🎯 選擇題 (130題)</button>
+            <button onclick="switchTab('tab-dictation')" id="btn-dictation" class="tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 whitespace-nowrap">✍️ 金句默書 (15句)</button>
+            <button onclick="switchTab('tab-flashcard')" id="btn-flashcard" class="tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 whitespace-nowrap">🃏 閃卡溫習區</button>
+            <button onclick="switchTab('tab-cloze')" id="btn-cloze" class="tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 whitespace-nowrap">🔲 概念填充題</button>
+            <button onclick="switchTab('tab-essay')" id="btn-essay" class="tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 whitespace-nowrap">📄 簡答題</button>
+            <button onclick="switchTab('tab-ai')" id="btn-ai" class="tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 whitespace-nowrap">🤖 AI 韓愈對話室</button>
+            <button onclick="switchTab('tab-badges')" id="btn-badges" class="tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 whitespace-nowrap">🏆 科舉勳章榜</button>
+            <button onclick="switchTab('tab-wrong')" id="btn-wrong" class="tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 whitespace-nowrap">
+                📕 錯題本 <span id="wrongBadge" class="bg-rose-500 text-white text-xs px-2 py-0.5 rounded-full hidden">0</span>
+            </button>
+            <button onclick="switchTab('tab-text')" id="btn-text" class="tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 whitespace-nowrap">🗺️ 結構腦圖</button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 分頁 1: 課文學習與7段完整對照語譯 -->
+        <!-- ========================================== -->
+        <section id="tab-study" class="tab-content space-y-6">
+
+            <!-- TTS 廣東話/普通話語音朗讀控制列 -->
+            <div class="bg-gradient-to-r from-indigo-900 to-slate-900 text-white p-4 rounded-xl shadow-md flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">🗣️</span>
+                    <div>
+                        <h4 class="font-bold text-sm">Web Speech 語音朗讀助手</h4>
+                        <p class="text-xs text-indigo-200">支援廣東話及普通話，隨時暫停與調節語速</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <select id="ttsLang" class="bg-indigo-800/80 text-white border border-indigo-600 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none">
+                        <option value="zh-HK" selected>廣東話 (Cantonese)</option>
+                        <option value="zh-CN">普通話 (Mandarin)</option>
+                    </select>
+                    <div class="flex items-center gap-1.5 bg-indigo-800/80 border border-indigo-600 rounded-lg px-2.5 py-1 text-xs">
+                        <span class="text-indigo-200">語速:</span>
+                        <select id="ttsRate" class="bg-transparent text-white focus:outline-none font-bold">
+                            <option value="0.75" class="text-slate-900">0.75x</option>
+                            <option value="1.0" selected class="text-slate-900">1.0x</option>
+                            <option value="1.25" class="text-slate-900">1.25x</option>
+                            <option value="1.5" class="text-slate-900">1.5x</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="playTTSFullText()" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg transition shadow">▶️ 朗讀全文</button>
+                        <button onclick="pauseTTS()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg transition">⏸️ 暫停</button>
+                        <button onclick="stopTTS()" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-lg transition">⏹️ 停止</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 課文 7 段逐段原文與白話對譯 -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6">
+                <div class="flex items-center justify-between border-b pb-3">
+                    <h3 class="text-xl font-bold text-indigo-900 flex items-center gap-2">
+                        📖 《師說》全文 7 段原文與白話語譯（藍字可點擊查看 DSE 字詞解析）
+                    </h3>
+                </div>
+
+                <!-- 第一段 -->
+                <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded">第一段：正面立論，明確擇師與解惑之必要</span>
+                        <button onclick="playTTSParagraph('p1')" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">🔊 朗讀第一段</button>
+                    </div>
+                    <div id="text-p1" class="font-serif text-slate-900 leading-relaxed font-semibold text-lg">
+                        「古之<span class="vocab-word" onclick="showWord('學者', '名詞', '求學的人', '【古今異義】古義指求學的人；今義指專門研究學問的專家。')">學者</span>必有<span class="vocab-word" onclick="showWord('師', '名詞', '老師', '作名詞用，指傳授知識解惑的導師。')">師</span>。<span class="vocab-word" onclick="showWord('師者', '名詞', '做老師的人', '句式標誌：「……者，所以……也」為典型判斷句。')">師者</span>，<span class="vocab-word" onclick="showWord('所以', '固定結構/代詞', '用來……的', '【古今異義】古義表憑藉或工具（用來……的）；今義為連詞，表因果關係。')">所以</span><span class="vocab-word" onclick="showWord('傳道', '動詞短語', '傳授儒家道理', '指傳授儒家的倫理綱常與修身治國之道。')">傳道</span><span class="vocab-word" onclick="showWord('受業', '動詞短語', '教授學業', '【通假字】「受」通「授」，指傳授學業知識。')">受業</span><span class="vocab-word" onclick="showWord('解惑', '動詞短語', '解答疑難問題', '解答關於道與學業上的困惑。')">解惑</span>也。人非生而知之者，<span class="vocab-word" onclick="showWord('孰', '疑問代詞', '誰', '疑問代詞，表示「誰能沒有疑惑」。')">孰</span>能無惑？惑而不從師，其為惑也，終不解矣。」
+                    </div>
+                    <div class="text-sm text-slate-700 bg-white p-3.5 rounded-lg border border-slate-200 space-y-1">
+                        <b class="text-indigo-800">【第一段白話語譯】：</b>
+                        古代求學的人一定有老師。老師，是用來傳授道理、教授學業、解答疑難問題的人。人不是生下來就知道道理的，誰能沒有疑惑？有了疑難卻不跟隨老師學習，那些疑難問題就始終得不到解決了。
+                    </div>
+                </div>
+
+                <!-- 第二段 -->
+                <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded">第二段：提出擇師標準，達者為師</span>
+                        <button onclick="playTTSParagraph('p2')" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">🔊 朗讀第二段</button>
+                    </div>
+                    <div id="text-p2" class="font-serif text-slate-900 leading-relaxed font-semibold text-lg">
+                        「生乎吾前，其聞道也<span class="vocab-word" onclick="showWord('固', '副詞', '本來', '副詞，表示「本來就比我早」。')">固</span>先乎吾，吾從而師之；生乎吾後，其聞道也亦先乎吾，吾從而師之。吾師道也，夫<span class="vocab-word" onclick="showWord('庸', '副詞', '豈、哪管', '【反問句式】「夫庸……乎」表示「哪裡需要知道……呢？」。')">庸</span>知其年之先後生於吾乎？是故無貴無賤，無長無少，<span class="vocab-word" onclick="showWord('道之所存，師之所存也', '經典句子', '道理存在的地方，就是老師存在的地方', '擇師的核心標準：只看是否懂得道理，不論貴賤長少。')">道之所存，師之所存也</span>。」
+                    </div>
+                    <div class="text-sm text-slate-700 bg-white p-3.5 rounded-lg border border-slate-200 space-y-1">
+                        <b class="text-indigo-800">【第二段白話語譯】：</b>
+                        出生在我前面的人，他懂得道理本來就比我早，我跟從他，拜他為師；出生在我後面的人，如果他懂得道理也比我早，我也跟從他，拜他為師。我學習的是道理，哪管他的年齡比我大還是比我小呢？因此，無論高貴卑賤，無論年長年幼，道理存在的地方，就是老師存在的地方。
+                    </div>
+                </div>
+
+                <!-- 第三段 -->
+                <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded">第三段：第一組對比 - 古聖從師 vs 今眾恥學</span>
+                        <button onclick="playTTSParagraph('p3')" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">🔊 朗讀第三段</button>
+                    </div>
+                    <div id="text-p3" class="font-serif text-slate-900 leading-relaxed font-semibold text-lg">
+                        「嗟乎！<span class="vocab-word" onclick="showWord('師道', '名詞', '從師學習的風尚', '指尊師重道、跟從老師學習的風氣。')">師道</span>之不傳也久矣！欲人之無惑也難矣！古之聖人，其<span class="vocab-word" onclick="showWord('出人', '動詞短語', '超出一般人', '指才智品德遠遠超出普通人。')">出人</span>也遠矣，<span class="vocab-word" onclick="showWord('猶且', '副詞', '尚且、還', '表示遞進或轉折，意為「尚且還跟從老師請教」。')">猶且</span>從師而問焉；今之眾人，其<span class="vocab-word" onclick="showWord('下', '動詞（活用）', '低於、不及', '【詞類活用】名詞活用為動詞，指「低於聖人」。')">下</span>聖人也亦遠矣，而<span class="vocab-word" onclick="showWord('恥', '意動動詞', '以……為恥', '【詞類活用】形容詞意動用法，「恥學於師」即以向老師學習為恥。')">恥</span>學於師。是故聖益聖，愚益愚。聖人之所以為聖，愚人之所以為愚，其皆出於此乎！」
+                    </div>
+                    <div class="text-sm text-slate-700 bg-white p-3.5 rounded-lg border border-slate-200 space-y-1">
+                        <b class="text-indigo-800">【第三段白話語譯】：</b>
+                        唉！從師學習的風尚不流傳已經很久了！想要人們沒有疑惑就很困難了！古代的聖人，他們超出一般人很遠，尚且跟從老師請教；現在的一般人，他們低於聖人也很遠，卻以向老師學習為恥。因此，聖人就更加聖明，愚人就更加愚昧。聖人之所以成為聖人，愚人之所以成為愚人，大概都是出於這個原因吧！
+                    </div>
+                </div>
+
+                <!-- 第四段 -->
+                <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded">第四段：第二組對比 - 愛子擇師 vs 自身恥師</span>
+                        <button onclick="playTTSParagraph('p4')" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">🔊 朗讀第四段</button>
+                    </div>
+                    <div id="text-p4" class="font-serif text-slate-900 leading-relaxed font-semibold text-lg">
+                        「愛其子，擇師而教之；於其身也，則恥師焉，惑矣。彼童子之師，授之書而習其<span class="vocab-word" onclick="showWord('句讀', '名詞', '文章停頓斷句之處', '【專有名詞】「句」指語氣完整的一句話，「讀」（音逗）指句中短暫停頓。')">句讀</span>者，非吾所謂傳其道解其惑者也。句讀之不知，惑之不解，或師焉，或不焉，<span class="vocab-word" onclick="showWord('小學而大遺', '成語/句子', '小的方面學習，大的方面遺漏', '【倒裝句批判】「小」指句讀；「大」指傳道解惑之大道理。揭示士大夫自相矛盾。')">小學而大遺</span>，吾未見其明也。」
+                    </div>
+                    <div class="text-sm text-slate-700 bg-white p-3.5 rounded-lg border border-slate-200 space-y-1">
+                        <b class="text-indigo-800">【第四段白話語譯】：</b>
+                        人們疼愛自己的孩子，選擇老師來教育他們；對於他們自己呢，卻以拜師為恥，這真是糊塗啊！那些兒童的老師，只是教兒童讀書、學習句讀的人，並不是我所說傳授道理、解答疑難問題的人。不明白句讀，向老師請教；有了疑難問題得不到解答，卻不向老師請教，小的方面要學習，大的方面卻放棄了，我看不出他們的明智之處。
+                    </div>
+                </div>
+
+                <!-- 第五段 -->
+                <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded">第五段：第三組對比 - 百工相師 vs 士大夫聚笑</span>
+                        <button onclick="playTTSParagraph('p5')" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">🔊 朗讀第五段</button>
+                    </div>
+                    <div id="text-p5" class="font-serif text-slate-900 leading-relaxed font-semibold text-lg">
+                        「巫、醫、樂師、百工之人，不恥相師。士大夫之族，曰師曰弟子云者，則羣聚而笑之。問之，則曰：『彼與彼年相若也，道相似也。』位卑則足羞，官盛則近諛。嗚呼！師道之不複可知矣。巫、醫、樂師、百工之人，君子<span class="vocab-word" onclick="showWord('不齒', '動詞短語', '看不起、不屑與之並列', '齒原本指牙齒，引申為排列。不齒即不屑一顧。')">不齒</span>，今其智乃反不能及，其可怪也歟！」
+                    </div>
+                    <div class="text-sm text-slate-700 bg-white p-3.5 rounded-lg border border-slate-200 space-y-1">
+                        <b class="text-indigo-800">【第五段白話語譯】：</b>
+                        巫醫、樂師、各種工匠，不以互相學習為恥。士大夫這些人，一聽到稱「老師」、稱「弟子」的人，就聚在一起嘲笑他們。問他們原因，就說：「那個人和那個人年齡差不多，懂得的道理也差不多。」拜地位低下的人為師就感到十分羞恥，拜官職高盛的人為師就被認為近於阿諛奉承。哎！從師學習的風尚不能恢復，由此就可以知道了。巫醫、樂師、各種工匠，是士大夫所不屑一顧的，現在士大夫的智慧反而比不上他們，這不是很奇怪的事嗎！
+                    </div>
+                </div>
+
+                <!-- 第六段 -->
+                <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded">第六段：舉例申論 - 聖人無常師與術業有專攻</span>
+                        <button onclick="playTTSParagraph('p6')" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">🔊 朗讀第六段</button>
+                    </div>
+                    <div id="text-p6" class="font-serif text-slate-900 leading-relaxed font-semibold text-lg">
+                        「<span class="vocab-word" onclick="showWord('聖人無常師', '經典論點', '聖人沒有固定的老師', '【歷史例證】舉孔子向郯子、萇弘、師襄、老聃請教證明。')">聖人無常師</span>。孔子師<span class="vocab-word" style="color:#7c3aed;border-color:#a78bfa" onclick="showHistorian('tanzi')">郯子</span>、<span class="vocab-word" style="color:#7c3aed;border-color:#a78bfa" onclick="showHistorian('changhong')">萇弘</span>、<span class="vocab-word" style="color:#7c3aed;border-color:#a78bfa" onclick="showHistorian('shixiang')">師襄</span>、<span class="vocab-word" style="color:#7c3aed;border-color:#a78bfa" onclick="showHistorian('laodian')">老聃</span>。郯子之徒，其賢不及孔子。孔子曰：三人行，則必有我師。是故弟子不必不如師，師不必賢於弟子，聞道有先後，<span class="vocab-word" onclick="showWord('術業有專攻', '經典名句', '學術技藝各有專門研究', '說明師生關係是相對的，各人在特定領域各有專長。')">術業有專攻</span>，如是而已。」
+                    </div>
+                    <div class="text-sm text-slate-700 bg-white p-3.5 rounded-lg border border-slate-200 space-y-1">
+                        <b class="text-indigo-800">【第六段白話語譯】：</b>
+                        聖人沒有固定的老師。孔子曾拜郯子、萇弘、師襄、老聃為師。郯子這些人，他們的賢能比不上孔子。孔子說：「三人同行，其中一定有可以當我老師的人。」因此，弟子不一定不如老師，老師也不一定比弟子賢能，只是懂得道理有早有晚，學術專業各有專長，如此罷了。
+                    </div>
+                </div>
+
+                <!-- 第七段 -->
+                <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-indigo-600 text-white text-xs font-bold px-2.5 py-1 rounded">第七段：交代寫作緣由 - 讚李蟠能行古道</span>
+                        <button onclick="playTTSParagraph('p7')" class="text-xs text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">🔊 朗讀第七段</button>
+                    </div>
+                    <div id="text-p7" class="font-serif text-slate-900 leading-relaxed font-semibold text-lg">
+                        「李氏子蟠，年十七，好古文，六藝經傳皆通習之，<span class="vocab-word" onclick="showWord('不拘於時', '被動句', '不受當時恥於從師的風氣限制', '「於」表示被動，指不被時俗壞風氣限制。')">不拘於時</span>，學於余。余<span class="vocab-word" onclick="showWord('嘉', '動詞', '讚賞、嘉許', '讚賞李蟠能執行古代尊師重道的精神。')">嘉</span>其能行古道，作《師說》以<span class="vocab-word" onclick="showWord('貽', '動詞', '贈送', '贈送給李蟠，點明寫作動機。')">貽</span>之。」
+                    </div>
+                    <div class="text-sm text-slate-700 bg-white p-3.5 rounded-lg border border-slate-200 space-y-1">
+                        <b class="text-indigo-800">【第七段白話語譯】：</b>
+                        李家的孩子叫蟠，十七歲，喜歡古文，六經的經文和傳注都普遍學習過，不受世俗風氣的限制，向我學習。我讚賞他能實行古人從師學習的風貌，寫了這篇《師說》來贈送給他。
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 分頁 2: 選擇題大挑戰 (130題) -->
+        <!-- ========================================== -->
+        <section id="tab-quiz" class="tab-content hidden space-y-6">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="filterQuiz('all', event)" class="q-filter px-3 py-1.5 rounded-lg text-sm font-semibold bg-indigo-600 text-white">全部 (130題)</button>
+                    <button onclick="filterQuiz('yuyi', event)" class="q-filter px-3 py-1.5 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">字詞語譯 (30題)</button>
+                    <button onclick="filterQuiz('neirong', event)" class="q-filter px-3 py-1.5 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">內容深究 (50題)</button>
+                    <button onclick="filterQuiz('wenyan', event)" class="q-filter px-3 py-1.5 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">文言知識 (30題)</button>
+                    <button onclick="filterQuiz('xiuci', event)" class="q-filter px-3 py-1.5 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">修辭手法 (10題)</button>
+                    <button onclick="filterQuiz('xuci', event)" class="q-filter px-3 py-1.5 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">文言虛詞 (10題)</button>
+                </div>
+                <button onclick="resetAndShuffleQuiz()" class="px-4 py-2 bg-amber-500 text-white font-bold rounded-lg shadow hover:bg-amber-600 text-sm transition flex items-center gap-1.5">
+                    🔀 重新挑戰（打亂題目與答案）
+                </button>
+            </div>
+
+            <div id="quizContainer" class="space-y-4"></div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 分頁 3: 金句默書特訓 (15句) -->
+        <!-- ========================================== -->
+        <section id="tab-dictation" class="tab-content hidden space-y-6">
+            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl">
+                <h3 class="font-bold text-amber-900 mb-1">✍️ DSE 必背 15 句精選金句默書</h3>
+                <p class="text-sm text-amber-800">請根據語意提示默寫出對應的文言句（包含標點符號）。系統將自動進行逐字精準核對！完全正確可獲 <b>+15 分</b>。</p>
+            </div>
+
+            <div class="flex justify-end gap-3 flex-wrap">
+                <button onclick="checkAllDictation()" class="px-6 py-2.5 bg-emerald-600 text-white font-bold rounded-lg shadow-md hover:bg-emerald-700 transition">✅ 一鍵核對全部答案</button>
+                <button onclick="resetDictation()" class="px-4 py-2.5 bg-slate-200 text-slate-700 font-bold rounded-lg hover:bg-slate-300 transition">🔄 重新挑戰默書</button>
+            </div>
+
+            <div id="dictationContainer" class="space-y-6"></div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 分頁 4 (Phase 3 新增): 艾賓浩斯 Flashcards 閃卡溫習區 -->
+        <!-- ========================================== -->
+        <section id="tab-flashcard" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b pb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-indigo-900">🃏 《師說》核心字詞與考點 3D 閃卡</h3>
+                        <p class="text-xs text-slate-500">點擊卡片可 3D 翻轉查看白話翻譯與考點解析，幫助長效記憶！</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-500">進度：</span>
+                        <span id="fcProgress" class="text-sm font-black text-indigo-600">1 / 10</span>
+                    </div>
+                </div>
+
+                <!-- 3D 閃卡主體 -->
+                <div class="max-w-xl mx-auto perspective-1000">
+                    <div id="flashcardElement" onclick="flipCard()" 
+                         class="transform-style-3d transition-transform duration-500 cursor-pointer min-h-[260px] bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border-2 border-indigo-200 p-8 shadow-lg flex flex-col justify-between relative">
+                        
+                        <!-- 正面 -->
+                        <div id="cardFront" class="backface-hidden space-y-4 text-center my-auto">
+                            <span id="cardCategory" class="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">核心文言概念</span>
+                            <h2 id="cardTitle" class="text-2xl font-bold font-serif text-slate-900">師者，所以傳道受業解惑也</h2>
+                            <p class="text-xs text-slate-400">（點擊卡片翻轉查看 DSE 考點解釋）</p>
+                        </div>
+
+                        <!-- 背面 -->
+                        <div id="cardBack" class="backface-hidden rotate-y-180 absolute inset-0 p-8 bg-white rounded-2xl border-2 border-emerald-300 flex flex-col justify-between text-center space-y-3">
+                            <span class="text-xs font-bold text-emerald-600">💡 DSE 白話翻譯與考點解析</span>
+                            <div class="space-y-2 my-auto">
+                                <p id="cardMeaning" class="text-base font-semibold text-slate-800 leading-relaxed"></p>
+                                <p id="cardTip" class="text-xs text-amber-800 bg-amber-50 p-2 rounded border border-amber-200"></p>
+                            </div>
+                            <p class="text-xs text-slate-400">（再次點擊可翻回正面）</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 閃卡控制列 -->
+                <div class="flex justify-center items-center gap-3 pt-2 flex-wrap">
+                    <button onclick="prevCard()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition">⬅️ 上一張</button>
+                    <button onclick="markCardMastered()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl transition shadow">✅ 已熟記 (+5分)</button>
+                    <button onclick="nextCard()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition">下一張 ➡️</button>
+                </div>
+                <!-- 掌握狀態按鈕 -->
+                <div class="flex justify-center items-center gap-3 pt-1">
+                    <span class="text-xs text-slate-400 font-medium">自我評估：</span>
+                    <button onclick="markCardKnown()" class="px-4 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs font-bold rounded-full transition border border-blue-300">👍 已掌握</button>
+                    <button onclick="markCardUnknown()" class="px-4 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-800 text-xs font-bold rounded-full transition border border-rose-300">👎 未掌握</button>
+                </div>
+                <!-- 掌握進度顯示 -->
+                <div id="masteryStatus" class="text-center text-xs text-slate-500 pt-1"></div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 分頁 5 (Phase 3 新增): AI 韓愈對話室 & 筆記生成器 -->
+        <!-- ========================================== -->
+        <section id="tab-ai" class="tab-content hidden space-y-6">
+
+
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[500px]">
+                
+                <!-- 對話頭部 -->
+                <div class="bg-gradient-to-r from-slate-900 to-indigo-950 p-4 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-indigo-600 border-2 border-amber-400 flex items-center justify-center text-xl font-bold">韓</div>
+                        <div>
+                            <h3 class="font-bold text-base leading-tight">昌黎先生 · 韓愈 (AI 模擬對話室)</h3>
+                            <p class="text-xs text-indigo-300">唐代大儒 · 「古文運動」領袖 · 解答《師說》疑難</p>
+                        </div>
+                    </div>
+                    <button onclick="openNoteSelectModal()" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-900 text-xs font-bold rounded-lg shadow transition">
+                        📑 一鍵生成 DSE 考前筆記
+                    </button>
+                </div>
+
+                <!-- 聊天紀錄視窗 -->
+                <div id="chatHistory" class="flex-1 p-5 space-y-4 overflow-y-auto bg-slate-50 text-sm">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-xs shrink-0">韓</div>
+                        <div class="bg-white p-3.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-2xs max-w-lg space-y-1">
+                            <p class="font-bold text-xs text-indigo-900">昌黎先生：</p>
+                            <p class="text-slate-800 leading-relaxed">後生可畏！老夫乃韓愈。觀爾求學孜孜不倦，實乃幸事。關於《師說》之宗旨、文言句式，抑或老夫當年批評士大夫之用意，爾有何疑問？盡管發問！</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快捷提問建議 -->
+                <div class="p-2.5 bg-indigo-50/80 border-t border-indigo-100 flex gap-2 overflow-x-auto text-xs">
+                    <span class="text-slate-400 shrink-0 self-center font-bold">快捷提問：</span>
+                    <button onclick="askAI('先生，請告訴我《師說》的核心擇師標準是什麼？')" class="px-2.5 py-1 bg-white border border-indigo-200 rounded-full text-indigo-700 hover:bg-indigo-100 whitespace-nowrap">核心擇師標準？</button>
+                    <button onclick="askAI('先生當年為何要嚴厲批判士大夫「小學而大遺」？')" class="px-2.5 py-1 bg-white border border-indigo-200 rounded-full text-indigo-700 hover:bg-indigo-100 whitespace-nowrap">何謂小學而大遺？</button>
+                    <button onclick="askAI('請先生指導 DSE 考試中，《師說》的三組對比有何精妙之處？')" class="px-2.5 py-1 bg-white border border-indigo-200 rounded-full text-indigo-700 hover:bg-indigo-100 whitespace-nowrap">三組對比精妙之處？</button>
+                </div>
+
+                <!-- 輸入框 -->
+                <div class="p-3 bg-white border-t border-slate-200 flex gap-2">
+                    <input id="chatInput" type="text" placeholder="向昌黎先生請教《師說》問題..." 
+                           onkeydown="if(event.key==='Enter') sendChatMessage()"
+                           class="flex-1 px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <button onclick="sendChatMessage()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition">發送</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 分頁 6 (Phase 3 新增): 科舉勳章榜與成就牆 -->
+        <!-- ========================================== -->
+        <section id="tab-badges" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                <div class="flex items-center justify-between border-b pb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-indigo-900">🏆 功名科舉成就牆</h3>
+                        <p class="text-xs text-slate-500">完成學習任務、提升積分即可解鎖限定成就勳章！</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400">已解鎖勳章</span>
+                        <div id="badgeCount" class="text-xl font-black text-amber-500">0 / 6</div>
+                    </div>
+                </div>
+
+                <div id="badgesGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <!-- 動態渲染勳章卡片 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 分頁 7: 個人錯題本 -->
+        <!-- ========================================== -->
+        <section id="tab-wrong" class="tab-content hidden space-y-6">
+            <div class="bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-xl flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-rose-900">📕 個人專屬錯題本</h3>
+                    <p class="text-sm text-rose-700">自動紀錄你在選擇題與默書中答錯的題目，方便集中複習。</p>
+                </div>
+                <button onclick="clearWrongBook()" class="px-3 py-1.5 bg-rose-600 text-white font-semibold text-xs rounded hover:bg-rose-700 transition">清空錯題本</button>
+            </div>
+
+            <div id="wrongContainer" class="space-y-4"></div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 分頁 8: 全文結構脈絡腦圖 -->
+        <!-- ========================================== -->
+        <section id="tab-text" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6">
+                <div class="flex items-center justify-between border-b pb-3">
+                    <h3 class="text-xl font-bold text-indigo-900">🗺️ 《師說》完整文章結構脈絡圖</h3>
+                </div>
+
+                <!-- 中心論點 -->
+                <div class="flex justify-center">
+                    <div class="bg-indigo-900 text-white px-6 py-3 rounded-2xl shadow-lg text-center font-bold text-base max-w-xs">
+                        📌 中心論點<br>
+                        <span class="font-serif font-normal text-indigo-200 text-sm">「古之學者必有師」</span>
+                    </div>
+                </div>
+
+                <!-- 箭頭 -->
+                <div class="flex justify-center"><div class="w-0.5 h-6 bg-indigo-300"></div></div>
+
+                <!-- 四大部分 Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <!-- 第一二段：正面立論 -->
+                    <div class="border-2 border-indigo-300 rounded-2xl overflow-hidden">
+                        <div class="bg-indigo-600 text-white px-4 py-2 font-bold text-sm flex items-center gap-2">
+                            <span class="bg-white text-indigo-700 text-xs font-black px-2 py-0.5 rounded-full">第一至二段</span>
+                            正面立論
+                        </div>
+                        <div class="p-4 space-y-2 bg-indigo-50">
+                            <div class="bg-white border border-indigo-200 rounded-xl p-3 text-sm">
+                                <div class="font-bold text-indigo-800 text-xs mb-1">第一段：老師的職責</div>
+                                <div class="text-slate-700 font-serif text-xs">傳道 · 受業 · 解惑<br><span class="text-indigo-600">▸ 說明從師學習的必要性</span></div>
+                            </div>
+                            <div class="bg-white border border-indigo-200 rounded-xl p-3 text-sm">
+                                <div class="font-bold text-indigo-800 text-xs mb-1">第二段：擇師的標準</div>
+                                <div class="text-slate-700 font-serif text-xs">道之所存，師之所存也<br><span class="text-indigo-600">▸ 達者為師，不論貴賤長幼</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第三至五段：三組對比 -->
+                    <div class="border-2 border-amber-400 rounded-2xl overflow-hidden">
+                        <div class="bg-amber-500 text-white px-4 py-2 font-bold text-sm flex items-center gap-2">
+                            <span class="bg-white text-amber-700 text-xs font-black px-2 py-0.5 rounded-full">第三至五段</span>
+                            三組對比批判
+                        </div>
+                        <div class="p-4 space-y-2 bg-amber-50">
+                            <div class="bg-white border border-amber-200 rounded-xl p-3 text-xs">
+                                <div class="font-bold text-amber-800 mb-1">對比一（第三段）</div>
+                                <div class="flex gap-2 text-slate-700 font-serif items-center">
+                                    <span class="text-emerald-700">古聖從師問焉</span>
+                                    <span class="text-slate-400 font-sans">vs</span>
+                                    <span class="text-rose-700">今眾恥學於師</span>
+                                </div>
+                                <div class="text-amber-700 mt-1">→ 聖益聖，愚益愚</div>
+                            </div>
+                            <div class="bg-white border border-amber-200 rounded-xl p-3 text-xs">
+                                <div class="font-bold text-amber-800 mb-1">對比二（第四段）</div>
+                                <div class="flex gap-2 text-slate-700 font-serif items-center">
+                                    <span class="text-emerald-700">愛子擇師教句讀</span>
+                                    <span class="text-slate-400 font-sans">vs</span>
+                                    <span class="text-rose-700">自身卻恥師焉</span>
+                                </div>
+                                <div class="text-amber-700 mt-1">→ 小學而大遺</div>
+                            </div>
+                            <div class="bg-white border border-amber-200 rounded-xl p-3 text-xs">
+                                <div class="font-bold text-amber-800 mb-1">對比三（第五段）</div>
+                                <div class="flex gap-2 text-slate-700 font-serif items-center">
+                                    <span class="text-emerald-700">百工不恥相師</span>
+                                    <span class="text-slate-400 font-sans">vs</span>
+                                    <span class="text-rose-700">士大夫羣聚而笑</span>
+                                </div>
+                                <div class="text-amber-700 mt-1">→ 智反不能及，其可怪也歟！</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第六段：舉例申論 -->
+                    <div class="border-2 border-emerald-400 rounded-2xl overflow-hidden">
+                        <div class="bg-emerald-600 text-white px-4 py-2 font-bold text-sm flex items-center gap-2">
+                            <span class="bg-white text-emerald-700 text-xs font-black px-2 py-0.5 rounded-full">第六段</span>
+                            舉例申論
+                        </div>
+                        <div class="p-4 space-y-2 bg-emerald-50">
+                            <div class="bg-white border border-emerald-200 rounded-xl p-3 text-xs">
+                                <div class="font-bold text-emerald-800 mb-1">聖人無常師</div>
+                                <div class="text-slate-700 font-serif">孔子師<b>郯子</b>（官制）、<b>萇弘</b>（音律）、<b>師襄</b>（琴）、<b>老聃</b>（禮）</div>
+                                <div class="text-emerald-700 mt-1">→ 引《論語》：「三人行，則必有我師」</div>
+                            </div>
+                            <div class="bg-white border border-emerald-200 rounded-xl p-3 text-xs">
+                                <div class="font-bold text-emerald-800 mb-1">師生關係是相對的</div>
+                                <div class="text-slate-700 font-serif">弟子不必不如師，師不必賢於弟子</div>
+                                <div class="text-emerald-700 mt-1">→ 聞道有先後，術業有專攻</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第七段：寫作緣由 -->
+                    <div class="border-2 border-purple-400 rounded-2xl overflow-hidden">
+                        <div class="bg-purple-600 text-white px-4 py-2 font-bold text-sm flex items-center gap-2">
+                            <span class="bg-white text-purple-700 text-xs font-black px-2 py-0.5 rounded-full">第七段</span>
+                            交代寫作緣由
+                        </div>
+                        <div class="p-4 bg-purple-50">
+                            <div class="bg-white border border-purple-200 rounded-xl p-3 text-xs space-y-1">
+                                <div class="font-bold text-purple-800">贈李蟠，點明動機</div>
+                                <div class="text-slate-700 font-serif">李氏子蟠，年十七，好古文，六藝經傳皆通習之</div>
+                                <div class="text-purple-700">→ 不拘於時，學於余</div>
+                                <div class="text-purple-700">→ 余嘉其能行古道，作《師說》以貽之</div>
+                                <div class="text-slate-500 mt-2">✦ 首尾呼應「古之學者必有師」</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 論證邏輯總結 -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-center">
+                    <span class="font-bold text-slate-700">論證邏輯：</span>
+                    <span class="text-indigo-700 font-medium">正面立論</span>
+                    <span class="text-slate-400 mx-2">→</span>
+                    <span class="text-amber-700 font-medium">三組對比批判</span>
+                    <span class="text-slate-400 mx-2">→</span>
+                    <span class="text-emerald-700 font-medium">歷史舉例印證</span>
+                    <span class="text-slate-400 mx-2">→</span>
+                    <span class="text-purple-700 font-medium">交代寫作動機</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 分頁 9: 作者與背景資料卡片 -->
+        <!-- ========================================== -->
+        <section id="tab-author" class="tab-content hidden space-y-6">
+            <!-- 韓愈肖像卡 -->
+            <div class="bg-gradient-to-r from-indigo-50 to-slate-50 p-5 rounded-2xl border border-indigo-100 shadow-sm flex flex-col sm:flex-row items-center gap-5">
+                <div class="flex-shrink-0">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Han_Yu.jpg/220px-Han_Yu.jpg"
+                         alt="韓愈畫像"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                         class="w-32 h-40 object-cover rounded-xl shadow-md border-2 border-indigo-200">
+                    <div style="display:none;" class="w-32 h-40 rounded-xl shadow-md border-2 border-indigo-200 bg-indigo-100 flex items-center justify-center flex-col gap-1">
+                        <span class="text-5xl font-bold text-indigo-700 font-serif">韓</span>
+                        <span class="text-xs text-indigo-500 font-bold">韓愈 768–824</span>
+                    </div>
+                </div>
+                <div class="space-y-2 text-sm">
+                    <h3 class="text-lg font-bold text-indigo-900">韓愈（768–824）</h3>
+                    <p class="text-slate-700">字<b>退之</b>，自號「昌黎先生」，唐代著名文學家、思想家。「唐宋八大家」之首，古文運動的核心推動者。</p>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded-full">唐宋八大家之首</span>
+                        <span class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-1 rounded-full">古文運動領袖</span>
+                        <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded-full">刑部侍郎</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 韓愈生平時間線 -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                <h3 class="text-xl font-bold text-indigo-900 border-b pb-3 flex items-center gap-2">👤 韓愈生平與仕途時間線</h3>
+                <div class="relative border-l-4 border-indigo-300 pl-6 space-y-5">
+                    <div class="relative">
+                        <div class="absolute -left-[34px] top-1 w-4 h-4 rounded-full bg-indigo-600 border-2 border-white shadow"></div>
+                        <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">768 年</span>
+                        <p class="mt-1 text-sm text-slate-700">生於鄧州南陽（今河南省）。字退之，自號「昌黎先生」。</p>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[34px] top-1 w-4 h-4 rounded-full bg-indigo-600 border-2 border-white shadow"></div>
+                        <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">792 年</span>
+                        <p class="mt-1 text-sm text-slate-700">第四次應進士試，終於及第。此後三次應吏部銓選均落選，仕途多舛。</p>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[34px] top-1 w-4 h-4 rounded-full bg-amber-500 border-2 border-white shadow"></div>
+                        <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded">802 年（約寫《師說》時）</span>
+                        <p class="mt-1 text-sm text-slate-700">任國子監四門博士。此時社會上士大夫盛行恥於從師的風氣，韓愈贈李蟠《師說》，公開批判陋習。</p>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[34px] top-1 w-4 h-4 rounded-full bg-indigo-600 border-2 border-white shadow"></div>
+                        <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">807 年</span>
+                        <p class="mt-1 text-sm text-slate-700">任國子監博士，主持太學教育，積極推行儒學，廣收門徒。</p>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[34px] top-1 w-4 h-4 rounded-full bg-indigo-600 border-2 border-white shadow"></div>
+                        <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">819 年</span>
+                        <p class="mt-1 text-sm text-slate-700">因上《諫迎佛骨表》批評皇帝崇佛，被貶潮州刺史。後獲召回，累遷至兵部侍郎。</p>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[34px] top-1 w-4 h-4 rounded-full bg-rose-500 border-2 border-white shadow"></div>
+                        <span class="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">824 年</span>
+                        <p class="mt-1 text-sm text-slate-700">卒於長安，享年五十七歲。諡號「文」，世稱「韓文公」。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 古文運動 -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="text-xl font-bold text-indigo-900 border-b pb-3 flex items-center gap-2">📜 古文運動主張</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl space-y-2">
+                        <div class="font-bold text-amber-900 flex items-center gap-2">⚔️ 反對</div>
+                        <p class="text-sm text-amber-800">反對魏晉南北朝以來盛行的「駢文」—— 講究對仗工整、堆砌辭藻、音律聲調的形式主義文風。</p>
+                    </div>
+                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
+                        <div class="font-bold text-emerald-900 flex items-center gap-2">✅ 提倡</div>
+                        <p class="text-sm text-emerald-800">提倡先秦兩漢的「散文古文」—— 文以載道、語言樸實自然、邏輯嚴密、便於說理議論。</p>
+                    </div>
+                    <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-xl space-y-2">
+                        <div class="font-bold text-indigo-900 flex items-center gap-2">🤝 盟友</div>
+                        <p class="text-sm text-indigo-800">韓愈與柳宗元同為「古文運動」雙領袖，合稱「韓柳」，共同倡導以文章弘揚儒家道統。</p>
+                    </div>
+                    <div class="p-4 bg-purple-50 border border-purple-200 rounded-xl space-y-2">
+                        <div class="font-bold text-purple-900 flex items-center gap-2">🏆 地位</div>
+                        <p class="text-sm text-purple-800">韓愈被列為「唐宋八大家」之首，影響深遠。八大家：韓愈、柳宗元、歐陽修、蘇洵、蘇軾、蘇轍、王安石、曾鞏。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 蘇軾評價 -->
+            <div class="bg-gradient-to-r from-slate-800 to-indigo-900 text-white p-6 rounded-2xl shadow-lg space-y-3">
+                <h3 class="text-lg font-bold text-amber-300 flex items-center gap-2">💬 蘇軾對韓愈的千古評價</h3>
+                <blockquote class="text-2xl font-serif font-bold leading-relaxed text-white text-center py-3">「文起八代之衰，道濟天下之溺。」</blockquote>
+                <div class="text-sm text-indigo-200 space-y-1 border-t border-indigo-700 pt-3">
+                    <p>「八代」指東漢、魏、晉、宋、齊、梁、陳、隋，此八朝文風華而不實。</p>
+                    <p>韓愈以古文掃除駢文積弊，重振文章正道，故曰「文起八代之衰」。</p>
+                    <p>「道濟天下之溺」—— 韓愈弘揚儒家道統，拯救了溺於佛、道之中的天下人心。</p>
+                </div>
+            </div>
+
+            <!-- 唐代社會風尚 -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="text-xl font-bold text-indigo-900 border-b pb-3 flex items-center gap-2">🏛️ 唐代社會風尚（《師說》寫作背景）</h3>
+                <div class="space-y-3">
+                    <div class="flex gap-3 p-4 bg-rose-50 border border-rose-200 rounded-xl">
+                        <span class="text-2xl shrink-0">🎭</span>
+                        <div>
+                            <div class="font-bold text-rose-900 text-sm">門第觀念盛行</div>
+                            <p class="text-xs text-rose-800 mt-1">唐代士族繼承魏晉門閥制度，貴族自恃身份，恥於向地位低微的人請教或拜師，視從師為有損尊嚴之舉。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                        <span class="text-2xl shrink-0">😂</span>
+                        <div>
+                            <div class="font-bold text-amber-900 text-sm">恥師之風大行</div>
+                            <p class="text-xs text-amber-800 mt-1">士大夫若有人稱師道、收弟子，便受到「羣聚而笑之」的嘲諷。敢公開尊師、從師者極為罕見。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                        <span class="text-2xl shrink-0">📚</span>
+                        <div>
+                            <div class="font-bold text-blue-900 text-sm">佛道盛行，儒學式微</div>
+                            <p class="text-xs text-blue-800 mt-1">唐代佛教、道教大行其道，儒家倫理道統受到衝擊。韓愈寫《師說》，亦有振興儒學、重建師道之心。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                        <span class="text-2xl shrink-0">🎓</span>
+                        <div>
+                            <div class="font-bold text-emerald-900 text-sm">李蟠——特立獨行的佳例</div>
+                            <p class="text-xs text-emerald-800 mt-1">在此風氣下，年僅十七歲的李蟠「不拘於時，學於余」，敢打破陋習向韓愈求學，故韓愈特地寫《師說》贈予，以示讚賞與激勵。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 分頁 12: 概念填充題 -->
+        <!-- ========================================== -->
+        <section id="tab-cloze" class="tab-content hidden space-y-6">
+            <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-xl">
+                <h3 class="font-bold text-emerald-900 mb-1">🔲 概念填充題</h3>
+                <p class="text-sm text-emerald-800">以<b>白話文</b>填寫《師說》的關鍵概念。每題附有原文提示，填好後點擊「核對答案」查閱參考答案，答對可自行領取 <b>+10 分</b>。</p>
+            </div>
+            <div id="clozeContainer" class="space-y-6">
+                <!-- 動態渲染 -->
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- 分頁 13: 開放式簡答題引導框架 -->
+        <!-- ========================================== -->
+        <section id="tab-essay" class="tab-content hidden space-y-6">
+            <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-xl">
+                <h3 class="font-bold text-purple-900 mb-1">📄 開放式簡答題 ／ DSE 長題目訓練</h3>
+                <p class="text-sm text-purple-800">每題設有「答題框架提示」和「完整參考答案」。嘗試先自己思考，再參考答案。</p>
+            </div>
+            <div id="essayContainer" class="space-y-6">
+                <!-- 動態渲染 -->
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // 數據庫 1: 110 題選擇題
+        // ==========================================
+        const rawQuizData = [
+            // 字詞語譯 (30題)
+            { id:'y1', cat:'yuyi', q:'「古之學者必有師」中的「學者」意思是？', options:['專家學者','求學的人','做老師的人','學問深厚的人'], a:1, exp:'古之「學者」指求學的人，非指今日之專家學者。' },
+            { id:'y2', cat:'yuyi', q:'「師者，所以傳道受業解惑也」中的「所以」意思是？', options:['因此','用來……的','原因','並且'], a:1, exp:'「所以」在此表工具或憑藉，意為「用來……的」。' },
+            { id:'y3', cat:'yuyi', q:'「受業」中的「受」同哪個字？', options:['授','壽','守','收'], a:0, exp:'「受」通「授」，指教授學業。' },
+            { id:'y4', cat:'yuyi', q:'「人非生而知之者，孰能無惑」中的「孰」意思是？', options:['熟練','誰','什麼','為什麼'], a:1, exp:'「孰」為疑問代詞，意思是「誰」。' },
+            { id:'y5', cat:'yuyi', q:'「惑而不從師，其為惑也終不解矣」中的「從」意思是？', options:['跟隨、請教','從前','聽從','隨便'], a:0, exp:'「從師」即跟隨老師學習請教。' },
+            { id:'y6', cat:'yuyi', q:'「生乎吾前，其聞道也固先乎吾」中的「固」意思是？', options:['堅固','本來','固執','必定'], a:1, exp:'「固」意思是「本來」。' },
+            { id:'y7', cat:'yuyi', q:'「庸知其年之先後生於吾乎」中的「庸」意思是？', options:['平庸','豈、哪管','庸俗','需要'], a:1, exp:'「庸」為副詞，表示反問，意為「豈、哪管」。' },
+            { id:'y8', cat:'yuyi', q:'「道之所存，師之所存也」中的「存」意思是？', options:['保存','存在','留存','思考'], a:1, exp:'「存」意思是「存在」。道理存在的地方，就是老師存在的地方。' },
+            { id:'y9', cat:'yuyi', q:'「師道之不傳也久矣」中的「師道」意思是？', options:['做老師的道德','從師學習的風尚','老師的道理','當老師的方法'], a:1, exp:'「師道」指尊師重道、從師學習的風貌與傳統。' },
+            { id:'y10', cat:'yuyi', q:'「其出人也遠矣」中的「出人」意思是？', options:['走出人群','超出一般人','出人頭地','產出人才'], a:1, exp:'「出人」指超出一般普通人。' },
+            { id:'y11', cat:'yuyi', q:'「猶且從師而問焉」中的「猶且」意思是？', options:['猶豫不決','尚且、還','好像','況且'], a:1, exp:'「猶且」意思是「尚且、還」。' },
+            { id:'y12', cat:'yuyi', q:'「其下聖人也亦遠矣」中的「下」意思是？', options:['下降','低於、不及','在下面','部下'], a:1, exp:'「下」在此動詞化，意思是「低於」或「不及」。' },
+            { id:'y13', cat:'yuyi', q:'「而恥學於師」中的「恥」意思是？', options:['恥辱','以……為恥','羞恥','恥笑'], a:1, exp:'「恥」為意動用法，意思是「以……為恥」。' },
+            { id:'y14', cat:'yuyi', q:'「是故聖益聖，愚益愚」中的第一個「聖」意思是？', options:['聖人','聖明','神聖','智慧'], a:0, exp:'第一個「聖」指「聖人」（名詞），第二個指「聖明」（形容詞）。' },
+            { id:'y15', cat:'yuyi', q:'「其皆出於此乎」中的「此」指代什麼？', options:['是否從師學習','聖人與愚人的分別','官位高低','學習方法'], a:0, exp:'「此」指代是否從師學習這件事。' },
+            { id:'y16', cat:'yuyi', q:'「授之書而習其句讀者」中的「句讀」意思是？', options:['讀書的方法','文章的斷句停頓','句子的意思','讀音'], a:1, exp:'「句讀」指文詞停頓斷句之處。' },
+            { id:'y17', cat:'yuyi', q:'「小學而大遺」中的「小」指什麼？', options:['年紀小','句讀之不知（文字斷句）','小技巧','小學生'], a:1, exp:'「小」指學習句讀斷句等微小的知識。' },
+            { id:'y18', cat:'yuyi', q:'「大遺」中的「大」指什麼？', options:['大事情','解惑傳道的大道理','大人物','年紀大'], a:1, exp:'「大」指理解大道理及解答疑難。' },
+            { id:'y19', cat:'yuyi', q:'「巫醫樂師百工之人」中的「百工」意思是？', options:['一百個工人','各種手工業者/工匠','百姓','官員'], a:1, exp:'「百工」指各種從事手工業的工匠。' },
+            { id:'y20', cat:'yuyi', q:'「不恥相師」中的「相師」意思是？', options:['互相為師/互相學習','相面的人','挑選老師','相國與老師'], a:0, exp:'「相師」指互相以對方為師學習。' },
+            { id:'y21', cat:'yuyi', q:'「位卑則足羞」中的「位卑」意思是？', options:['職位/地位卑微','自卑','卑鄙','自謙'], a:0, exp:'「位卑」指官位或社會地位低下。' },
+            { id:'y22', cat:'yuyi', q:'「官盛則近諛」中的「諛」意思是？', options:['阿諛諂媚','愉快','疑惑','榮譽'], a:0, exp:'「諛」指奉承諂媚。' },
+            { id:'y23', cat:'yuyi', q:'「君子不齒」中的「不齒」意思是？', options:['沒有牙齒','不屑一顧/看不起','不敢說話','不排列'], a:1, exp:'「不齒」表示輕視，不屑與之並列。' },
+            { id:'y24', cat:'yuyi', q:'「聖人無常師」中的「常」意思是？', options:['經常','固定的','平常的','長久'], a:1, exp:'「常」意思是「固定的」。' },
+            { id:'y25', cat:'yuyi', q:'「孔子師郯子」中的第一個「師」字意思是？', options:['老師','以……為師','學習','師範'], a:1, exp:'「師」在此為意動用法，意為「以……為師」。' },
+            { id:'y26', cat:'yuyi', q:'「術業有專攻」中的「攻」意思是？', options:['攻擊','專研、研究','工巧','攻克'], a:1, exp:'「攻」意思是「研究、鑽研」。' },
+            { id:'y27', cat:'yuyi', q:'「六藝經傳皆通習之」中的「六藝」指？', options:['禮樂射御書數','六經（詩書禮樂易春秋）','六種才藝','六位學者'], a:1, exp:'此處「六藝」指儒家的六經（詩、書、禮、樂、易、春秋）。' },
+            { id:'y28', cat:'yuyi', q:'「余嘉其能行古道」中的「嘉」意思是？', options:['嘉獎','讚賞、嘉許','美好','慶賀'], a:1, exp:'「嘉」意思是「讚賞、嘉許」。' },
+            { id:'y29', cat:'yuyi', q:'「作《師說》以貽之」中的「貽」意思是？', options:['留下','贈送','遺忘','移開'], a:1, exp:'「貽」意思是「贈送」。' },
+            { id:'y30', cat:'yuyi', q:'「不拘於時」中的「時」意思是？', options:['時間','時俗/當時恥於從師的風氣','時運','時節'], a:1, exp:'「時」指當時社會上恥於拜師的不良風氣（時俗）。' },
+
+            // 內容深究 (50題)
+            { id:'n1', cat:'neirong', q:'韓愈寫《師說》的主要目的是什麼？', options:['宣揚尊師重道並打擊當時恥於從師的不良風氣','介紹孔子的老師','批評巫醫百工','鼓勵李蟠考取功名'], a:0, exp:'主要目的在於破除當時士大夫恥於從師的風氣，宣揚尊師重道的傳統。' },
+            { id:'n2', cat:'neirong', q:'《師說》開篇第一句「古之學者必有師」在全文的作用是什麼？', options:['開門見山，提出中心論點','鋪墊說明','引用權威','總結全文'], a:0, exp:'第一句直接提出中心論點，屬開門見山之法。' },
+            { id:'n3', cat:'neirong', q:'韓愈認為老師最根本的職責是什麼？', options:['教導斷句','傳道、受業、解惑','輔導考試','監督品德'], a:1, exp:'原文：「師者，所以傳道受業解惑也。」' },
+            { id:'n4', cat:'neirong', q:'韓愈提出的擇師標準是什麼？', options:['官位高低','年齡長幼','是否掌握「道」（達者為師）','學歷高低'], a:2, exp:'「道之所存，師之所存也」，以是否掌握「道」為唯一標準。' },
+            { id:'n5', cat:'neirong', q:'《師說》第三至五段批判士大夫，使用了哪種主要論證手法？', options:['對比論證','比喻論證','類比論證','假設論證'], a:0, exp:'第三至五段集中使用三組對比論證，批判士大夫恥於從師的風氣。' },
+            { id:'n6', cat:'neirong', q:'《師說》批判士大夫恥於從師，一共使用了幾組對比？', options:['一組','兩組','三組','四組'], a:2, exp:'共有三組：1.古聖與今人 2.擇師教子與自身恥師 3.百工相師與士大夫聚笑。' },
+            { id:'n7', cat:'neirong', q:'第一組對比（古聖今人）導出的結論是什麼？', options:['聖益聖，愚益愚','小學而大遺','其可怪也歟','位卑則足羞'], a:0, exp:'古之聖人從師故聖益聖，今之眾人恥師故愚益愚。' },
+            { id:'n8', cat:'neirong', q:'第二組對比（愛子擇師 vs 身恥師）揭示了士大夫什麼心態？', options:['自相矛盾（小學而大遺）','謙虛謹慎','尊師重道','光明磊落'], a:0, exp:'重視孩子的句讀卻無視自己的大疑難，乃自相矛盾、小學大遺。' },
+            { id:'n9', cat:'neirong', q:'第三組對比（巫醫樂師百工 vs 士大夫）說明了什麼現象？', options:['士大夫的智慧反而不如百工之人','百工最懂儒家道理','士大夫官位更高','百工不肯學習'], a:0, exp:'原文結論：「今其智乃反不能及，其可怪也歟！」' },
+            { id:'n10', cat:'neirong', q:'韓愈提出「聖人無常師」是以哪位歷史人物作為舉例？', options:['孟子','孔子','荀子','莊子'], a:1, exp:'舉孔子向郯子、萇弘、師襄、老聃請教為例。' },
+            { id:'n11', cat:'neirong', q:'「三人行，則必有我師」出自哪部經典？', options:['《論語》','《孟子》','《道德經》','《左傳》'], a:0, exp:'引用《論語·述而》孔子之言。' },
+            { id:'n12', cat:'neirong', q:'「弟子不必不如師，師不必賢於弟子」這句話說明了什麼？', options:['師生關係是相對的，聞道有先後，術業有專攻','老師不如學生','學生必須超越老師','師生應該平等競爭'], a:0, exp:'說明知識與技能的領會有先後專業之分，師生關係是動態相對的。' },
+            { id:'n13', cat:'neirong', q:'韓愈寫這篇文章贈送給誰？', options:['柳宗元','李蟠','蘇軾','歐陽修'], a:1, exp:'文中明確指出：「李氏子蟠……作《師說》以貽之。」' },
+            { id:'n14', cat:'neirong', q:'李蟠當時幾歲？', options:['17歲','25歲','30歲','40歲'], a:0, exp:'原文：「年十七，好古文」。' },
+            { id:'n15', cat:'neirong', q:'韓愈讚賞李蟠的哪些品質？', options:['好古文、通六藝、能行古道不拘於時','官位高顯','詞藻華麗','擅長繪畫'], a:0, exp:'讚許他不受當時恥於從師的風聲約束，能行古道。' },
+            { id:'n16', cat:'neirong', q:'韓愈在文中表現出的寫作態度是什麼？', options:['勇於抗俗、嚴嚴批判、熱情鼓勵','順應時勢','消極避世','盲目崇古'], a:0, exp:'韓愈展現出不避世俗眼光、直言批判與鼓勵後進的勇氣。' },
+            { id:'n17', cat:'neirong', q:'本文的文體類別屬於什麼？', options:['贈序 / 論說文','史傳','游記','奏議'], a:0, exp:'《師說》是一篇帶有贈序性質的論說文（議論文）。' },
+            { id:'n18', cat:'neirong', q:'「嗟乎！師道之不傳也久矣！」這句話表達了什麼情感？', options:['對當時風氣不從師的痛心與慨歎','憤怒批判','欣喜讚賞','失望絕望'], a:0, exp:'以感歎詞「嗟乎」表達對師道衰落的深深痛心與感歎。' },
+            { id:'n19', cat:'neirong', q:'韓愈對「童子之師」的看法是？', options:['僅教斷句文字，非傳道解惑之師','非常尊崇','完全否定','比自己厲害'], a:0, exp:'指出童子之師只「授之書而習其句讀」，並非真正傳大道、解大惑的老師。' },
+            { id:'n20', cat:'neirong', q:'「位卑則足羞，官盛則近諛」反映士大夫受到什麼觀念束縛？', options:['門第等級與名利觀念','年齡限制','學費考量','地理距離'], a:0, exp:'反映士大夫被社會地位與等級名利思想所束縛。' },
+            { id:'n21', cat:'neirong', q:'「君子不齒」表現了士大夫對百工的什麼態度？', options:['極度輕視與鄙視','尊敬','羨慕','平等'], a:0, exp:'「不齒」即不屑一顧，反映輕視勞動者的社會偏見。' },
+            { id:'n22', cat:'neirong', q:'作者引用孔子的言行，目的是為了論證什麼？', options:['「聖人無常師」及「道之所存，師之所存」','孔子最厲害','聖人無所不知','古代教育制度完美'], a:0, exp:'用孔子虛心拜師的例證，論證聖人亦無常師、達者即可為師。' },
+            { id:'n23', cat:'neirong', q:'文章結尾交代寫作緣由，在結構上起到什麼作用？', options:['點明寫作對象與動機，首尾呼應','總結全文','提出新論點','批評朝政'], a:0, exp:'第四段點明寫作動機（貽李蟠），並在主題上呼應「行古道」。' },
+            { id:'n24', cat:'neirong', q:'韓愈是唐代哪場重要文學運動的倡導者？', options:['古文運動','新詩運動','詩界革命','浪漫主義運動'], a:0, exp:'韓愈與柳宗元同為唐代「古文運動」的核心倡導者。' },
+            { id:'n25', cat:'neirong', q:'唐宋八大家中，韓愈被後人尊稱為？', options:['八大家之首 / 文起八代之衰','詩仙','詞聖','茶聖'], a:0, exp:'蘇軾曾稱讚韓愈「文起八代之衰，道濟天下之溺」。' },
+            { id:'n26', cat:'neirong', q:'「吾師道也，夫庸知其年之先後生於吾乎？」表達了什麼擇師觀？', options:['學習的是道理，不必在乎老師年齡大小','老師必須比自己年長','年齡小不能當老師','年長者必定更有智慧'], a:0, exp:'強調「擇師以道」，與年齡長幼無關。' },
+            { id:'n27', cat:'neirong', q:'韓愈批評士大夫「羣聚而笑之」，表現出士大夫怎樣的心態？', options:['盲目從眾、自高自大','謙虛好學','幽默風趣','團結友愛'], a:0, exp:'揭露士大夫虛榮自大、隨波逐流的不良心理。' },
+            { id:'n28', cat:'neirong', q:'「人非生而知之者，孰能無惑？」這句話的作用是？', options:['強調人人皆有疑惑，故必須從師解惑','證明聖人沒有疑惑','說明人生來就知道道理','鼓勵自學'], a:0, exp:'從人非生而知之的常理推論出必須請教老師。' },
+            { id:'n29', cat:'neirong', q:'「聞道有先後，術業有專攻」中「術業」意思是？', options:['學問與技藝','手術與事業','術數','職業'], a:0, exp:'「術業」指學術、技能與專業領域。' },
+            { id:'n30', cat:'neirong', q:'下列哪項不是韓愈在《師說》中批評士大夫的理由？', options:['學費給得太少','小學而大遺','恥學於師','智反不能及百工'], a:0, exp:'文中並未提及學費問題。' },
+            { id:'n31', cat:'neirong', q:'「聖益聖，愚益愚」主要歸因於什麼？', options:['是否願意從師學習','天生智商差異','家庭背景','官位高低'], a:0, exp:'韓愈認為聖人之所以更聖明是因為從師，愚人更愚昧是因為恥於從師。' },
+            { id:'n32', cat:'neirong', q:'「巫醫樂師百工之人，君子不齒」中的「君子」指什麼人？', options:['自命不凡的士大夫官僚','道德高尚的人','君王','古代聖賢'], a:0, exp:'此處「君子」帶有諷刺意味，指自命清高尊貴的士大夫階層。' },
+            { id:'n33', cat:'neirong', q:'文中引用孔子稱「三人行，則必有我師」是為了強調？', options:['隨處都有值得學習的人','走路要三人結伴','孔子朋友很多','三人中必有一人是老師'], a:0, exp:'強調謙虛求教、隨處皆有我師的道理。' },
+            { id:'n34', cat:'neirong', q:'韓愈寫作《師說》時的時代背景是？', options:['佛道盛行、士族門第觀勢重、恥於從師','戰亂頻繁','科舉制度被廢除','文字獄嚴重'], a:0, exp:'唐代魏晉遺風尚存，貴族門第觀念重，士大夫視拜師為恥。' },
+            { id:'n35', cat:'neirong', q:'「句讀之不知，惑之不解」的學習結果是？', options:['小學而大遺，未見其明','成為聖人','通曉大義','官運亨通'], a:0, exp:'原文：「句讀之不知，惑之不解……小學而大遺，吾未見其明也。」' },
+            { id:'n36', cat:'neirong', q:'「不拘於時」中的「時」字體現了李蟠的什麼精神？', options:['不畏世俗偏見的獨立精神','不守時','不順應季節','不顧時代發展'], a:0, exp:'指李蟠能打破當時士大夫恥於拜師的世俗陋習。' },
+            { id:'n37', cat:'neirong', q:'《師說》全文的論證結構邏輯是？', options:['提出論點 -> 對比批判 -> 舉例印證 -> 交代緣由','舉例 -> 提出論點 -> 結論','批判風範 -> 提出論點 -> 總結','抒情 -> 議論 -> 說明'], a:0, exp:'經典的立論 -> 破立結合對比 -> 歷史舉例 -> 總結寫作動機結構。' },
+            { id:'n38', cat:'neirong', q:'韓愈對於「師」的定義與傳統童子之師最大的不同在於？', options:['強調傳承儒家之道與解答人生大惑','強調背誦文章','強調算術技能','強調體育鍛鍊'], a:0, exp:'韓愈提升了「師」的層次，強調傳道與解惑而非僅止於文字斷句。' },
+            { id:'n39', cat:'neirong', q:'「惑而不從師，其為惑也終不解矣」這句話運用了什麼邏輯推論？', options:['反面假定推論','比喻推論','舉例推論','類比推論'], a:0, exp:'從反面假設如果不從師，疑難將永遠無法解決。' },
+            { id:'n40', cat:'neirong', q:'「道之所存，師之所存也」打破了傳統什麼觀念？', options:['打破尊卑、貴賤與年齡等級的界限','打破男女界限','打破國界','打破貧富界限'], a:0, exp:'打破了依據貴賤、長少選擇老師的封建傳統觀念。' },
+            { id:'n41', cat:'neirong', q:'「孔子師郯子、萇弘、師襄、老聃」說明孔子拜師時看重什麼？', options:['看重對方在特定領域的專長','看重對方的官位','看重對方的年齡','看重對方的財富'], a:0, exp:'孔子向不同專長的人學習（如師襄學琴、老聃學禮），體現「術業有專攻」。' },
+            { id:'n42', cat:'neirong', q:'「彼童子之師」中「彼」的感情色彩是？', options:['帶有些許輕視/區隔的客觀語氣','極度讚賞','無比崇敬','極度憤怒'], a:0, exp:'用「彼」字劃清「童子之師」與自己所定義的「傳道解惑之師」的界限。' },
+            { id:'n43', cat:'neirong', q:'韓愈在第二段連續感歎「師道之不傳也久矣」、「欲人之無惑也難矣」，表達了什麼？', options:['對社會現實風聲的沉痛感歎','對自己的無奈','對學生的失望','對朝廷的不滿'], a:0, exp:'連用感歎句增強抒情色彩，抒發對師道衰落的痛心。' },
+            { id:'n44', cat:'neirong', q:'為什麼百工之人「不恥相師」？', options:['因為手工業技術需要代代相傳與切磋學習','因為他們沒有文化','因為官府強制','因為要賺錢'], a:0, exp:'百工重視實用技藝傳承，因此不以互相學習為恥。' },
+            { id:'n45', cat:'neirong', q:'士大夫嘲笑拜師者「曰師曰弟子云者，則羣聚而笑之」，反映了什麼？', options:['士大夫虛偽傲慢與盲目從眾','士大夫很幽默','士大夫感情好','士大夫重視禮節'], a:0, exp:'揭示了士大夫階層的虛榮傲慢與以從師為恥的怪現象。' },
+            { id:'n46', cat:'neirong', q:'「作《師說》以貽之」中的「說」體現文章特質為？', options:['解說道理、發表議論','講故事','描寫風景','抒發個人情懷'], a:0, exp:'「說」是古代一種論說文體，用以說明道理。' },
+            { id:'n47', cat:'neirong', q:'「聞道有先後」的意思是？', options:['理解道理的時間有早有晚','聽到的道理有真有假','道理有難有易','說話有先後順序'], a:0, exp:'指每個人領悟道理的時間有先有後。' },
+            { id:'n48', cat:'neirong', q:'韓愈提倡「古道」在唐代的現實意義是？', options:['振興儒學、恢復尊師重道的良風','恢復古代交通','鼓勵大家穿古裝','恢復古代官制'], a:0, exp:'旨在興復儒家道統，重建尊師重道的優良社會風聲。' },
+            { id:'n49', cat:'neirong', q:'李蟠「通六藝經傳」說明他？', options:['儒學功底紮實、勤奮好學','只喜歡讀六本書','精通六種武術','擅長六種樂器'], a:0, exp:'表明李蟠對儒家經典有深厚的研究與學習。' },
+            { id:'n50', cat:'neirong', q:'《師說》能成為千古名篇的核心價值在於？', options:['思想深刻、論證嚴密、勇於批判與關懷教育','語氣激烈','詞藻極度華麗','字數極多'], a:0, exp:'憑藉極具批判魄力的思想、嚴密對比論證與經典的擇師觀傳世。' },
+
+            // 文言知識 (30題)
+            { id:'w1', cat:'wenyan', q:'「師者，所以傳道受業解惑也」是什麼句式？', options:['判斷句','被動句','倒裝句','省略句'], a:0, exp:'用「……者，所以……也」構成典型的判斷句式。' },
+            { id:'w2', cat:'wenyan', q:'「不拘於時，學於余」中的兩個「於」字分別表示？', options:['被 / 向','在 / 比','對 / 從','給 / 與'], a:0, exp:'前一個「於」表被動（被時俗局限），後一個表對象（向我學習）。' },
+            { id:'w3', cat:'wenyan', q:'「句讀之不知，惑之不解」屬於什麼倒裝句式？', options:['賓語前置','定語後置','狀語後置','主謂倒裝'], a:0, exp:'「之」為賓語前置的標誌，正常語序為「不知句讀，不解惑」。' },
+            { id:'w4', cat:'wenyan', q:'「恥學於師」中的「恥」字屬於什麼詞類活用？', options:['意動用法（以……為恥）','使動用法','名詞作動詞','形容詞作名詞'], a:0, exp:'形容詞意動用法，意思是「以……為恥」。' },
+            { id:'w5', cat:'wenyan', q:'「孔子師郯子」中的「師」字屬於什麼詞類活用？', options:['意動用法（以……為師）','使動用法','名詞作狀語','形容詞作動詞'], a:0, exp:'名詞意動用法，意思是「以……為師」。' },
+            { id:'w6', cat:'wenyan', q:'「吾師道也」中的「師」字屬於什麼詞類活用？', options:['名詞作動詞（學習）','意動用法','使動用法','形容詞'], a:0, exp:'名詞活用為動詞，意思是「學習（道理）」。' },
+            { id:'w7', cat:'wenyan', q:'「受業」中的「受」字屬於什麼文言現象？', options:['通假字（通「授」）','古今異義','詞類活用','一詞多義'], a:0, exp:'「受」通「授」，指傳授。' },
+            { id:'w8', cat:'wenyan', q:'「或師焉，或不焉」中的「不」字通哪個字？', options:['否','捕','布','步'], a:0, exp:'「不」通「否」，表示不從師學習。' },
+            { id:'w9', cat:'wenyan', q:'「古之學者必有師」中的「學者」古今異義差異為？', options:['古：求學的人；今：有高深學問的專家','古：專家；今：學生','古今意思完全相同','古：老師；今：學生'], a:0, exp:'古義指求學的人，今義指學術專家。' },
+            { id:'w10', cat:'wenyan', q:'「師者，所以傳道受業解惑也」中的「所以」古今異義為？', options:['古：用來……的；今：表因果關係連詞','古：因此；今：用來','古今意思相同','古：原因；今：所以'], a:0, exp:'古義表示「用來……的憑藉」，今義為因果連詞。' },
+            { id:'w11', cat:'wenyan', q:'「吾從而師之」中的「師」字用法是？', options:['意動用法（以……為師）','名詞作動詞','使動用法','形容詞'], a:0, exp:'意動用法，即「以之為師」。' },
+            { id:'w12', cat:'wenyan', q:'「位卑則足羞」中的「羞」字屬於？', options:['意動用法（感到羞恥/以……為羞）','使動用法','名詞','動詞'], a:0, exp:'意動用法，意為「感到羞恥」。' },
+            { id:'w13', cat:'wenyan', q:'「君子不齒」中的「齒」字詞類活用為？', options:['名詞作動詞（並列、提及）','使動用法','意動用法','狀語'], a:0, exp:'名詞作動詞，齒原本指牙齒，引申為並列排列。' },
+            { id:'w14', cat:'wenyan', q:'「聖益聖，愚益愚」中第二個「聖」和「愚」屬於？', options:['形容詞作名詞（聖明的人/愚昧的人）','動詞','狀語','數詞'], a:0, exp:'形容詞活用為名詞，指聖明的人/愚昧的人。' },
+            { id:'w15', cat:'wenyan', q:'「其下聖人也亦遠矣」中的「下」字詞類活用為？', options:['動詞（低於、不及）','名詞','形容詞','副詞'], a:0, exp:'方位名詞活用為動詞，意思是「低於、不及」。' },
+            { id:'w16', cat:'wenyan', q:'「道之所存，師之所存也」中的「之」字作用是？', options:['取消句子獨立性','代詞（它）','動詞（到……去）','結構助詞（的）'], a:0, exp:'用在主謂之間，取消句子獨立性。' },
+            { id:'w17', cat:'wenyan', q:'「師道之不傳也久矣」中的「之」字作用是？', options:['取消句子獨立性','賓語前置標誌','代詞','動詞'], a:0, exp:'用在主謂之間，取消句子獨立性。' },
+            { id:'w18', cat:'wenyan', q:'「句讀之不知」中的「之」字作用是？', options:['賓語前置的標誌','結構助詞（的）','取消句子獨立性','代詞'], a:0, exp:'賓語前置的結構標誌。' },
+            { id:'w19', cat:'wenyan', q:'「其皆出於此乎」中的「其」字表示什麼語氣？', options:['推測語氣（大概、恐）','反問語氣','命令語氣','感歎語氣'], a:0, exp:'副詞，表示推測語氣（大概）。' },
+            { id:'w20', cat:'wenyan', q:'「其可怪也歟」中的「其」字表示什麼語氣？', options:['反問語氣（難道）','推測語氣','肯定語氣','祈使語氣'], a:0, exp:'副詞，加強反問語氣（難道）。' },
+            { id:'w21', cat:'wenyan', q:'「夫庸知其年之先後生於吾乎」中的「庸……乎」句式表示？', options:['反問句式（哪管/難道……嗎）','因果句式','假設句式','遞進句式'], a:0, exp:'固定反問句式，意思是「哪裡需要知道……呢？」。' },
+            { id:'w22', cat:'wenyan', q:'「道之所存，師之所存也」是什麼句式？', options:['判斷句','被動句','倒裝句','省略句'], a:0, exp:'以「……也」結尾表判斷的句式。' },
+            { id:'w23', cat:'wenyan', q:'「不拘於時」是什麼句式？', options:['被動句（被時俗局限）','判斷句','賓語前置','省略句'], a:0, exp:'「於」引出動作發出者，構成被動句。' },
+            { id:'w24', cat:'wenyan', q:'「學於余」是什麼句式？', options:['狀語後置句 / 介詞結構後置','賓語前置','被動句','判斷句'], a:0, exp:'正常語序為「於余學」，介詞短語後置。' },
+            { id:'w25', cat:'wenyan', q:'「授之書而習其句讀者」中的「之」字代指？', options:['童子（學生）','老師','書本','韓愈'], a:0, exp:'代詞，指代學習的童子。' },
+            { id:'w26', cat:'wenyan', q:'「小學而大遺」中的「而」字表示什麼關係？', options:['轉折關係（卻）','順承關係','並列關係','因果關係'], a:0, exp:'連詞，表示轉折關係（學了小的卻遺漏了大的）。' },
+            { id:'w27', cat:'wenyan', q:'「生乎吾前」中的「乎」字相當於哪個介詞？', options:['於','之','者','也'], a:0, exp:'介詞，「乎」在此相當於「於」（在）。' },
+            { id:'w28', cat:'wenyan', q:'「作《師說》以貽之」中的「以」字意思是？', options:['連詞，來 / 用來','介詞，因為','介詞，按照','動詞，以為'], a:0, exp:'連詞，表示目的（來贈送給他）。' },
+            { id:'w29', cat:'wenyan', q:'「三人行，則必有我師」中的「三人」意思是？', options:['泛指多個人 / 幾個人','剛好三個人','三位老師','三位聖人'], a:0, exp:'古漢語中「三」常表示虛數，泛指多個人。' },
+            { id:'w30', cat:'wenyan', q:'「術業有專攻」中的「專攻」古今異義差異為？', options:['古：專門研究；今：專門攻擊/攻克','古今完全相同','古：攻打；今：學習','古：專一；今：攻擊'], a:0, exp:'古義指專心研究，今義多指攻克難關或專門攻擊。' },
+
+            // 修辭/論證手法 (10題)
+            { id:'x1', cat:'xiuci', q:'「古之學者必有師。」這句話採用了哪種主要寫作手法開展全文？', options:['開門見山（直接提出論點）','比喻論證','排比','引用論證'], a:0, exp:'首句直接點出「學者必有師」的中心論點，屬「開門見山」的寫作手法，無任何鋪墊即立論。' },
+            { id:'x2', cat:'xiuci', q:'「師者，所以傳道受業解惑也。」這句話屬於哪種句式/手法？', options:['判斷句（下定義）','設問句','對偶句','感嘆句'], a:0, exp:'此為判斷句，以「……者……也」句式為老師的職責下定義，屬論說文常見手法。' },
+            { id:'x3', cat:'xiuci', q:'第二段對比「古之聖人」與「今之眾人」，主要採用哪種論證手法？', options:['對比論證','舉例論證','比喻論證','引用論證'], a:0, exp:'第二段以古之聖人（從師）對比今之眾人（恥師），形成強烈對比，屬對比論證。' },
+            { id:'x4', cat:'xiuci', q:'「愛其子，擇師而教之；於其身也，則恥師焉」這段論述屬於哪種手法？', options:['對比論證（自相矛盾）','比喻論證','引用論證','歸納論證'], a:0, exp:'韓愈借「士大夫為子擇師卻自己恥師」這一矛盾行為作對比，揭示其邏輯矛盾。' },
+            { id:'x5', cat:'xiuci', q:'「巫醫樂師百工之人，不恥相師」與「士大夫之族……羣聚而笑之」形成什麼效果？', options:['諷刺對比——以下層反襯上層之可笑','歸納法——從多個例子得出結論','比喻——將士大夫比作巫醫','引用——引用歷史典故'], a:0, exp:'作者刻意以「下層」（巫醫樂師）不恥學習，對比「上層」（士大夫）恥師，形成強烈諷刺。' },
+            { id:'x6', cat:'xiuci', q:'「孔子師郯子、萇弘、師襄、老聃」一段屬於哪種論證手法？', options:['舉例論證（以聖人為例）','比喻論證','對比論證','假設論證'], a:0, exp:'以孔子虛心從師的事例為例，屬舉例論證，兼具引用效果，說服力強。' },
+            { id:'x7', cat:'xiuci', q:'「是故弟子不必不如師，師不必賢於弟子」這兩句話運用了哪種修辭？', options:['雙重否定（加強肯定語氣）','排比','設問','誇張'], a:0, exp:'「不必不如」為雙重否定，相當於「不見得不如」，語氣比直接說「可能勝於」更為強調。' },
+            { id:'x8', cat:'xiuci', q:'第二段末「嗚呼！師道之不復，可知矣」中「嗚呼」表達了什麼效果？', options:['感嘆語氣，表達痛惜感慨','反問，否定師道','疑問，質疑現象','引用，援引古籍'], a:0, exp:'「嗚呼」為感嘆詞，帶出作者對當時恥師之風的深切痛惜，情感強烈。' },
+            { id:'x9', cat:'xiuci', q:'全文三段論述的整體結構屬於哪種方式？', options:['正面立論→反面批判→正面舉例印證','順敘→倒敘→插敘','總→分→總','引用→分析→結論'], a:0, exp:'第一段立論（師之定義與必要），第二段破論（批判恥師之風），第三段舉例（孔子及李蟠）印證，屬「立→破→證」結構。' },
+            { id:'x10', cat:'xiuci', q:'「句讀之不知，惑之不解，或師焉，或不焉，小學而大遺，吾未見其明也。」這段主要採用什麼論證策略？', options:['揭示矛盾，以荒謬推論反駁恥師者','引用經典','舉外國例子','比喻說理'], a:0, exp:'作者點出「學句讀」卻「不解惑」的矛盾行為，以邏輯推論揭示恥師者的愚昧，屬歸謬法。' },
+
+            // 文言虛詞 (10題)
+            { id:'xv1', cat:'xuci', q:'「古之學者必有師」中「之」字的用法是？', options:['結構助詞「的」','代詞（他/它）','取消句子獨立性','賓語前置標誌'], a:0, exp:'「古之學者」意為「古代的求學者」，「之」作結構助詞，相當於「的」。' },
+            { id:'xv2', cat:'xuci', q:'「道之所存，師之所存也」中兩個「之」字用法是？', options:['取消句子獨立性（不翻譯）','結構助詞「的」','代詞（他）','賓語前置標誌'], a:0, exp:'「道之所存」中「之」介於主謂之間，取消句子獨立性，使其充當名詞短語，不翻譯。' },
+            { id:'xv3', cat:'xuci', q:'「其聞道也固先乎吾」中「其」字的意思是？', options:['代詞（他）','副詞：大概（推測）','副詞：難道（反問）','指示代詞（那些）'], a:0, exp:'此「其」為代詞，指「生乎吾前者」（即比我年長的人），作主語。' },
+            { id:'xv4', cat:'xuci', q:'「其皆出於此乎」中「其」字表達的語氣是？', options:['推測語氣（大概）','反問語氣（難道）','肯定語氣','祈使語氣'], a:0, exp:'「其……乎」表推測，全句意為「大概都是因此而來吧」。' },
+            { id:'xv5', cat:'xuci', q:'「其可怪也歟」中「其」字表達的語氣是？', options:['反問語氣（難道）','推測語氣（大概）','陳述語氣','感嘆語氣'], a:0, exp:'「其……歟」表反問，意為「難道這不奇怪嗎」，語氣強烈反問。' },
+            { id:'xv6', cat:'xuci', q:'「師不必賢於弟子」中「於」字的用法是？', options:['介詞：比（比較）','介詞：在','介詞：向','表被動（被）'], a:0, exp:'「賢於弟子」意為「比弟子賢能」，「於」作比較介詞。' },
+            { id:'xv7', cat:'xuci', q:'「不拘於時」中「於」字的用法是？', options:['表被動（被）','介詞：在','介詞：比','介詞：向'], a:0, exp:'「不拘於時」意為「不被時俗所拘束」，「於」引入被動主體，表被動。' },
+            { id:'xv8', cat:'xuci', q:'「惑而不從師」中「而」字的用法是？', options:['轉折連詞（卻）','順承連詞（並且）','修飾連詞（地）','因果連詞（因而）'], a:0, exp:'「惑而不從師」意為「有疑惑卻不跟從老師」，「而」表轉折。' },
+            { id:'xv9', cat:'xuci', q:'「授之書而習其句讀者」中「而」字的用法是？', options:['順承連詞（並且/並）','轉折連詞（卻）','修飾連詞（地）','因果連詞'], a:0, exp:'「授之書而習其句讀」意為「給他書並教他斷句」，兩動作順承，「而」表並列/順承。' },
+            { id:'xv10', cat:'xuci', q:'「作《師說》以貽之」中「以」字的用法是？', options:['連詞，來（表目的）','介詞，因為','介詞，憑藉','動詞，認為'], a:0, exp:'「以貽之」意為「來贈送給他」，「以」作連詞表目的。' }
+        ];
+
+        // ==========================================
+        // 數據庫 2: 15 句默書金句
+        // ==========================================
+        const dictationData = [
+            { id: 1, prompt: '說明從師學習的總綱與必要性：古代求學的人一定有老師。', text: '古之學者必有師。' },
+            { id: 2, prompt: '定義老師的核心職責：老師，是用來傳授道理、教授學業、解答疑難問題的。', text: '師者，所以傳道受業解惑也。' },
+            { id: 3, prompt: '說明有了疑惑卻不請教老師的後果：有了疑難卻不跟從老師學習，那些疑難問題就始終得不到解決。', text: '惑而不從師，其為惑也，終不解矣。' },
+            { id: 4, prompt: '提出擇師的唯一標準：因此無論高貴貧賤、年長年幼，道理在哪裡，老師就在哪裡。', text: '是故無貴無賤，無長無少，道之所存，師之所存也。' },
+            { id: 5, prompt: '感歎當時風氣：唉！從師學習的風尚不傳流已經很久了！', text: '嗟乎！師道之不傳也久矣！' },
+            { id: 6, prompt: '對比古聖與今人：古代聖人超出一般人遠甚尚且從師，今日大眾遠不及聖人卻以從師為恥。', text: '古之聖人，其出人也遠矣，猶且從師而問焉；今之眾人，其下聖人也亦遠矣，而恥學於師。' },
+            { id: 7, prompt: '總結古聖與今人對比的結果：所以聖人就更加聖明，愚人就更加愚昧。', text: '是故聖益聖，愚益愚。' },
+            { id: 8, prompt: '界定童子之師與傳道之師的別：那些孩童的老師，只是教他們讀書斷句，並非我所說傳道解惑的老師。', text: '彼童子之師，授之書而習其句讀者，非吾所謂傳其道解其惑者也。' },
+            { id: 9, prompt: '批判士大夫小學大遺：不通句讀去請教，大疑難卻不請教，學了小遺漏大，看不出其明智在哪。', text: '句讀之不知，惑之不解，或師焉，或不焉，小學而大遺，吾未見其明也。' },
+            { id: 10, prompt: '對比百工與士大夫：巫醫樂師百工不恥互相為師；士大夫談及師徒卻聚在一起嘲笑。', text: '巫、醫、樂師、百工之人，不恥相師；士大夫之族，曰師曰弟子云者，則羣聚而笑之。' },
+            { id: 11, prompt: '剖析士大夫恥於拜師的心態：稱地位低的人為師感到羞恥，稱官位高的人為師近於阿諛。', text: '位卑則足羞，官盛則近諛。' },
+            { id: 12, prompt: '感歎士大夫智力反不及百工：士大夫看不起百工，如今智力反而不如他們，真奇怪啊！', text: '巫、醫、樂師、百工之人，君子不齒，今其智乃反不能及，其可怪也歟！' },
+            { id: 13, prompt: '舉孔子為例證明聖人無常師：聖人沒有固定的老師，孔子曾拜郯子、萇弘、師襄、老聃為師。', text: '聖人無常師。孔子師郯子、萇弘、師襄、老聃。' },
+            { id: 14, prompt: '引用孔子名言說明隨處可為師：孔子說：「三人同行，其中必定有可以當我老師的人。」', text: '孔子曰：「三人行，則必有我師。」' },
+            { id: 15, prompt: '總結師生相對關係與聞道先後：學生不一定不如老師，老師不一定比學生賢能，領會道理有先後、專業有專攻罷了。', text: '是故弟子不必不如師，師不必賢於弟子，聞道有先後，術業有專攻，如是而已。' }
+        ];
+
+        // ==========================================
+        // 數據庫 3 (Phase 3 新增): Flashcards 閃卡池
+        // ==========================================
+        const flashcardData = [
+            { cat: '核心定義', front: '師者，所以傳道受業解惑也', meaning: '老師，是用來傳授儒家道理、教授學業、解答疑難問題的人。', tip: '【句式】典型的「……者，所以……也」判斷句，其中「受」通「授」。' },
+            { cat: '擇師觀念', front: '道之所存，師之所存也', meaning: '道理存在的地方，就是老師存在的地方。', tip: '【考點】擇師的唯一標準是是否掌握「道」，無關地位貴賤與年齡長幼。' },
+            { cat: '古今異義', front: '學者 / 所以', meaning: '學者：求學的人；所以：用來……的憑藉。', tip: '【對比】古義指求學之人，非今之專家；所以今義為因果連詞。' },
+            { cat: '批判風氣', front: '小學而大遺', meaning: '學習了小的方面（句讀斷句），卻遺漏了大的方面（傳道解惑）。', tip: '【句式】倒裝句，揭示士大夫擇師教子卻自己恥於拜師的自相矛盾。' },
+            { cat: '意動用法', front: '恥學於師 / 不恥相師', meaning: '以向老師學習為恥 / 不以互相學習為恥。', tip: '【詞類活用】「恥」為形容詞意動用法，解作「以……為恥」。' },
+            { cat: '舉例申論', front: '聖人無常師', meaning: '聖人沒有固定的老師。', tip: '【例證】作者舉孔子向郯子、萇弘、師襄、老聃請教證明。' },
+            { cat: '師生關係', front: '聞道有先後，術業有專攻', meaning: '理解道理有早有晚，學術專業各有專門研究。', tip: '【名句】說明師生關係是相對的，達者即可為師。' },
+            { cat: '寫作動機', front: '不拘於時，學於余', meaning: '不受當時恥於拜師風氣的限制，向我學習。', tip: '【被動句】「於」字表被動；讚許李蟠能實踐古代尊師風尚。' }
+        ];
+
+        // ==========================================
+        // 數據庫 4 (Phase 3 新增): 勳章成就池
+        // ==========================================
+        const badgeList = [
+            { id: 'b1', title: '初入師門', desc: '進入《師說》全能大師系統', icon: '🎓', req: (score, streak, dictCount) => true },
+            { id: 'b2', title: '持之以恆', desc: '連續登入學習達 3 天', icon: '🔥', req: (score, streak, dictCount) => streak >= 3 },
+            { id: 'b3', title: '小試牛刀', desc: '學習總積分達到 100 分', icon: '⭐', req: (score, streak, dictCount) => score >= 100 },
+            { id: 'b4', title: '大宗師', desc: '學習總積分達到 500 分', icon: '👑', req: (score, streak, dictCount) => score >= 500 },
+            { id: 'b5', title: '金句大師', desc: '完成至少 5 句精準默寫', icon: '✍️', req: (score, streak, dictCount) => dictCount >= 5 },
+            { id: 'b6', title: '零錯題勇士', desc: '個人錯題本完全清空', icon: '🛡️', req: (score, streak, dictCount) => wrongBook.length === 0 && score > 0 }
+        ];
+
+        // ==========================================
+        // 全局狀態管理
+        // ==========================================
+        let currentScore = parseInt(localStorage.getItem('shishuo_score')) || 0;
+        let streakDays = parseInt(localStorage.getItem('shishuo_streak')) || 1;
+        let lastLoginDate = localStorage.getItem('shishuo_last_login');
+        let wrongBook = JSON.parse(localStorage.getItem('shishuo_wrong_book')) || [];
+        let scoredDictations = new Set(JSON.parse(localStorage.getItem('shishuo_scored_dicts') || '[]'));
+
+        let activeQuizList = [];
+        let currentCardIdx = 0;
+        let isCardFlipped = false;
+        let completedDictations = parseInt(localStorage.getItem('shishuo_dict_count')) || 0;
+        let mermaidRendered = false;
+
+        const synth = window.speechSynthesis;
+        let currentUtterance = null;
+
+
+        // ==========================================
+        // 初始化載入
+        // ==========================================
+        window.onload = function() {
+            updateStreak();
+            updateScoreUI();
+            updateWrongBadge();
+            resetAndShuffleQuiz();
+            renderDictation();
+            renderWrongBook();
+            renderFlashcard();
+            renderBadges();
+        };
+
+        // ==========================================
+        // Streak 連勝計算 (Phase 3)
+        // ==========================================
+        function updateStreak() {
+            const today = new Date().toDateString();
+            if (lastLoginDate) {
+                const last = new Date(lastLoginDate);
+                const now = new Date(today);
+                const diffTime = Math.abs(now - last);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays === 1) {
+                    streakDays += 1;
+                } else if (diffDays > 1) {
+                    streakDays = 1;
+                }
+            } else {
+                streakDays = 1;
+            }
+            localStorage.setItem('shishuo_last_login', today);
+            localStorage.setItem('shishuo_streak', streakDays);
+            document.getElementById('streakCount').innerText = streakDays;
+        }
+
+        // ==========================================
+        // 分數 UI 與動畫
+        // ==========================================
+        function addScore(pts, msg = "答對囉！") {
+            currentScore += pts;
+            localStorage.setItem('shishuo_score', currentScore);
+            updateScoreUI();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-animate bg-emerald-500 text-white font-bold px-4 py-2 rounded-lg shadow-lg text-sm flex items-center gap-1.5';
+            toast.innerHTML = `<span>✨ ${msg}</span> <span class="text-amber-300 font-black">+${pts}分</span>`;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 1500);
+
+            renderBadges(); // 自動檢查成就
+        }
+
+        function updateScoreUI() {
+            document.getElementById('scoreText').innerText = currentScore;
+            const level = Math.floor(currentScore / 200) + 1;
+            const progress = (currentScore % 200) / 200 * 100;
+            document.getElementById('progressBar').style.width = `${Math.min(progress, 100)}%`;
+
+            const titles = ['儒家初學者', '勤奮童子', '秀才郎', '韓門弟子', '文壇精英', '國子監祭酒', '大唐文宗'];
+            const title = titles[Math.min(level - 1, titles.length - 1)];
+            document.getElementById('levelBadge').innerText = `Level ${level} 稱號：${title}`;
+        }
+
+        // ==========================================
+        // 字詞彈窗
+        // ==========================================
+        function showWord(word, pos, def, note) {
+            document.getElementById('modalWord').innerText = word;
+            document.getElementById('modalPos').innerText = pos;
+            document.getElementById('modalDef').innerText = def;
+            document.getElementById('modalNote').innerText = note;
+            document.getElementById('wordModal').classList.remove('hidden');
+        }
+
+        function closeWordModal() {
+            document.getElementById('wordModal').classList.add('hidden');
+        }
+
+        // ==========================================
+        // 語音朗讀 (TTS)
+        // ==========================================
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) {
+                alert("很抱歉，你的瀏覽器不支援 Web Speech 語音功能。");
+                return;
+            }
+            synth.cancel();
+            const lang = document.getElementById('ttsLang').value;
+            const rate = parseFloat(document.getElementById('ttsRate').value);
+
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = lang;
+            currentUtterance.rate = rate;
+            synth.speak(currentUtterance);
+        }
+
+        function playTTSFullText() {
+            const paragraphs = [
+                document.getElementById('text-p1').innerText,
+                document.getElementById('text-p2').innerText,
+                document.getElementById('text-p3').innerText,
+                document.getElementById('text-p4').innerText,
+                document.getElementById('text-p5').innerText,
+                document.getElementById('text-p6').innerText,
+                document.getElementById('text-p7').innerText
+            ];
+            speakText(paragraphs.join(" "));
+        }
+
+        function playTTSParagraph(pId) {
+            const pEl = document.getElementById(`text-${pId}`);
+            if (pEl) speakText(pEl.innerText);
+        }
+
+        function pauseTTS() {
+            if (synth.speaking && !synth.paused) synth.pause();
+            else if (synth.paused) synth.resume();
+        }
+
+        function stopTTS() { synth.cancel(); }
+
+        // ==========================================
+        // 分頁切換
+        // ==========================================
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = 'tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-transparent text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 whitespace-nowrap';
+            });
+            // 同步手機底部導航 active 狀態
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const shortId = tabId.replace('tab-', '');
+            const activeDesktopBtn = document.getElementById(`btn-${shortId}`);
+            if (activeDesktopBtn) {
+                activeDesktopBtn.className = 'tab-btn px-4 py-2.5 font-bold rounded-t-lg border-b-2 border-indigo-600 text-indigo-600 bg-indigo-50/50 flex items-center gap-1.5 whitespace-nowrap';
+            }
+            const activeMobileBtn = document.getElementById(`mnav-${shortId}`);
+            if (activeMobileBtn) activeMobileBtn.classList.add('active');
+
+            if (tabId === 'tab-text' && !mermaidRendered) {
+                mermaid.run({ nodes: document.querySelectorAll('#tab-text .mermaid') }).then(() => {
+                    mermaidRendered = true;
+                });
+            }
+        }
+
+        // ==========================================
+        // 選擇題邏輯
+        // ==========================================
+        function resetAndShuffleQuiz() {
+            let cloned = JSON.parse(JSON.stringify(rawQuizData));
+            shuffle(cloned);
+            cloned.forEach(q => {
+                let correctText = q.options[q.a];
+                shuffle(q.options);
+                q.a = q.options.indexOf(correctText);
+            });
+            activeQuizList = cloned;
+            renderQuiz('all');
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function filterQuiz(cat, evt) {
+            document.querySelectorAll('.q-filter').forEach(btn => {
+                btn.className = 'q-filter px-3 py-1.5 rounded-lg text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200';
+            });
+            if (evt && evt.target) {
+                evt.target.className = 'q-filter px-3 py-1.5 rounded-lg text-sm font-semibold bg-indigo-600 text-white';
+            }
+            renderQuiz(cat);
+        }
+
+        function renderQuiz(catFilter = 'all') {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+
+            const filtered = catFilter === 'all' 
+                ? activeQuizList 
+                : activeQuizList.filter(q => q.cat === catFilter);
+
+            filtered.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3";
+                card.id = `qcard-${q.id}`;
+
+                const categoryTags = {
+                    yuyi: '<span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded">字詞語譯</span>',
+                    neirong: '<span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded">內容深究</span>',
+                    wenyan: '<span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded">文言知識</span>',
+                    xiuci: '<span class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded">修辭手法</span>',
+                    xuci: '<span class="bg-teal-100 text-teal-700 text-xs font-bold px-2 py-0.5 rounded">文言虛詞</span>'
+                };
+
+                let optionsHTML = q.options.map((opt, oIdx) => `
+                    <button onclick="handleQuizAnswer('${q.id}', ${oIdx}, ${q.a})" 
+                            class="opt-btn-${q.id} w-full text-left p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition text-sm flex items-center justify-between">
+                        <span>${['A','B','C','D'][oIdx]}. ${opt}</span>
+                    </button>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="space-y-1">
+                            <div>${categoryTags[q.cat]} <span class="text-xs text-slate-400">#${idx+1}</span></div>
+                            <h4 class="font-bold text-slate-800 text-base">${q.q}</h4>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">${optionsHTML}</div>
+                    <div id="exp-${q.id}" class="hidden p-3 bg-slate-50 border-l-4 border-indigo-500 text-xs text-slate-600 rounded-r">
+                        <b>解析：</b> ${q.exp}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function handleQuizAnswer(qId, selectedIdx, correctIdx) {
+            const btns = document.querySelectorAll(`.opt-btn-${qId}`);
+            btns.forEach(btn => btn.disabled = true);
+            const qObj = activeQuizList.find(item => item.id === qId);
+
+            if (selectedIdx === correctIdx) {
+                btns[selectedIdx].classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800', 'font-bold');
+                addScore(10, "選擇題答對！");
+            } else {
+                btns[selectedIdx].classList.add('bg-rose-100', 'border-rose-500', 'text-rose-800');
+                btns[correctIdx].classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800', 'font-bold');
+
+                addToWrongBook({
+                    type: 'quiz',
+                    question: qObj.q,
+                    userAns: qObj.options[selectedIdx],
+                    correctAns: qObj.options[correctIdx],
+                    exp: qObj.exp
+                });
+            }
+            document.getElementById(`exp-${qId}`).classList.remove('hidden');
+        }
+
+        // ==========================================
+        // 默書邏輯
+        // ==========================================
+        function renderDictation() {
+            const container = document.getElementById('dictationContainer');
+            container.innerHTML = '';
+
+            dictationData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3";
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="text-xs font-bold text-amber-600 flex items-center gap-1">
+                            <span>💡 提示：</span>
+                            <span>${item.prompt}</span>
+                        </div>
+                        <label class="block font-bold text-slate-800 text-sm">第 ${item.id} 句默寫：</label>
+                    </div>
+                    <textarea id="dict-input-${item.id}" rows="2" 
+                              class="w-full p-3 border border-slate-300 rounded-lg text-base focus:ring-2 focus:ring-indigo-500 focus:outline-none" 
+                              placeholder="請在此輸入默寫句子（包含標點符號）..."></textarea>
+                    <div id="dict-result-${item.id}" class="hidden space-y-2">
+                        <div class="p-3 bg-slate-50 rounded-lg text-base leading-relaxed border" id="dict-diff-${item.id}"></div>
+                        <div class="p-3 bg-indigo-50 border-l-4 border-indigo-600 rounded-r text-sm text-indigo-950 font-medium">
+                            <b>✅ 標準完整答案：</b> <span class="text-indigo-800 font-serif text-base select-all">${item.text}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function checkAllDictation() {
+            dictationData.forEach(item => {
+                const inputEl = document.getElementById(`dict-input-${item.id}`);
+                const userText = inputEl.value.trim();
+                const resultBox = document.getElementById(`dict-result-${item.id}`);
+                const diffBox = document.getElementById(`dict-diff-${item.id}`);
+
+                if(!userText) return;
+                resultBox.classList.remove('hidden');
+
+                let diffHTML = '';
+                let isFullyCorrect = (userText === item.text);
+                const maxLen = Math.max(userText.length, item.text.length);
+
+                for(let i = 0; i < maxLen; i++) {
+                    const uChar = userText[i] || '';
+                    const tChar = item.text[i] || '';
+                    if (uChar === tChar) {
+                        diffHTML += `<span class="text-emerald-600 font-bold">${uChar}</span>`;
+                    } else {
+                        diffHTML += `<span class="text-rose-600 font-bold underline bg-rose-50 px-0.5">${uChar || ' (缺) '}</span>`;
+                    }
+                }
+
+                diffBox.innerHTML = `<b>你的默寫核對：</b> ${diffHTML}`;
+
+                if (isFullyCorrect) {
+                    if (!scoredDictations.has(item.id)) {
+                        addScore(15, `第 ${item.id} 句默寫完全正確！`);
+                        completedDictations++;
+                        scoredDictations.add(item.id);
+                        localStorage.setItem('shishuo_scored_dicts', JSON.stringify([...scoredDictations]));
+                        localStorage.setItem('shishuo_dict_count', completedDictations);
+                    } else {
+                        diffBox.innerHTML += ` <span class="text-emerald-600 text-xs font-bold ml-2">（本句已計分）</span>`;
+                    }
+                } else {
+                    addToWrongBook({
+                        type: 'dictation',
+                        question: `【默書第 ${item.id} 句提示】${item.prompt}`,
+                        userAns: userText || '(未填寫)',
+                        correctAns: item.text,
+                        exp: '請特別留意錯別字與標點符號的精準度。'
+                    });
+                }
+            });
+            renderBadges();
+        }
+
+        function resetDictation() {
+            dictationData.forEach(item => {
+                document.getElementById(`dict-input-${item.id}`).value = '';
+                document.getElementById(`dict-result-${item.id}`).classList.add('hidden');
+            });
+            scoredDictations = new Set();
+            completedDictations = 0;
+            localStorage.removeItem('shishuo_scored_dicts');
+            localStorage.setItem('shishuo_dict_count', 0);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==========================================
+        // Phase 3 閃卡 Flashcard 邏輯
+        // ==========================================
+        function renderFlashcard() {
+            const card = flashcardData[currentCardIdx];
+            document.getElementById('cardCategory').innerText = card.cat;
+            document.getElementById('cardTitle').innerText = card.front;
+            document.getElementById('cardMeaning').innerText = card.meaning;
+            document.getElementById('cardTip').innerText = card.tip;
+            document.getElementById('fcProgress').innerText = `${currentCardIdx + 1} / ${flashcardData.length}`;
+
+            // 重置翻面狀態
+            const el = document.getElementById('flashcardElement');
+            el.classList.remove('rotate-y-180');
+            isCardFlipped = false;
+        }
+
+        function flipCard() {
+            const el = document.getElementById('flashcardElement');
+            isCardFlipped = !isCardFlipped;
+            if (isCardFlipped) {
+                el.classList.add('rotate-y-180');
+            } else {
+                el.classList.remove('rotate-y-180');
+            }
+        }
+
+        function nextCard() {
+            currentCardIdx = (currentCardIdx + 1) % flashcardData.length;
+            renderFlashcard();
+        }
+
+        function prevCard() {
+            currentCardIdx = (currentCardIdx - 1 + flashcardData.length) % flashcardData.length;
+            renderFlashcard();
+        }
+
+        function markCardMastered() {
+            addScore(5, "閃卡掌握成功！");
+            nextCard();
+        }
+
+        // ==========================================
+        // AI 韓愈對話室（內建知識庫，無需外部 API）
+        // ==========================================
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+            askAI(msg);
+            input.value = '';
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str || ''));
+            return div.innerHTML;
+        }
+
+        function askAI(questionText) {
+            const history = document.getElementById('chatHistory');
+
+            // 用戶訊息（textContent 防 XSS）
+            const userBubble = document.createElement('div');
+            userBubble.className = 'flex items-start gap-3 justify-end';
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'bg-indigo-600 text-white p-3.5 rounded-2xl rounded-tr-none shadow-2xs max-w-lg space-y-1';
+            const userLabel = document.createElement('p');
+            userLabel.className = 'font-bold text-xs text-indigo-100';
+            userLabel.textContent = '你：';
+            const userText = document.createElement('p');
+            userText.className = 'leading-relaxed';
+            userText.textContent = questionText;
+            userMsgDiv.appendChild(userLabel);
+            userMsgDiv.appendChild(userText);
+            userBubble.appendChild(userMsgDiv);
+            history.appendChild(userBubble);
+
+            // 韓愈回應（內建知識庫）
+            const reply = generateHanYuReply(questionText);
+            setTimeout(() => {
+                const aiBubble = document.createElement('div');
+                aiBubble.className = 'flex items-start gap-3';
+                const aiIcon = document.createElement('div');
+                aiIcon.className = 'w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-xs shrink-0';
+                aiIcon.textContent = '韓';
+                const aiMsgDiv = document.createElement('div');
+                aiMsgDiv.className = 'bg-white p-3.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-2xs max-w-lg space-y-1';
+                const aiLabel = document.createElement('p');
+                aiLabel.className = 'font-bold text-xs text-indigo-900';
+                aiLabel.textContent = '昌黎先生：';
+                const aiText = document.createElement('p');
+                aiText.className = 'text-slate-800 leading-relaxed whitespace-pre-wrap text-sm';
+                aiText.textContent = reply;
+                aiMsgDiv.appendChild(aiLabel);
+                aiMsgDiv.appendChild(aiText);
+                aiBubble.appendChild(aiIcon);
+                aiBubble.appendChild(aiMsgDiv);
+                history.appendChild(aiBubble);
+                history.scrollTop = history.scrollHeight;
+            }, 400);
+
+            history.scrollTop = history.scrollHeight;
+        }
+
+        // ==========================================
+        // 內建知識庫：覆蓋《師說》所有 DSE 考點
+        // ==========================================
+        function generateHanYuReply(q) {
+            const has = (...words) => words.some(w => q.includes(w));
+
+            // ── 老師職責 ──
+            if (has('傳道', '受業', '解惑', '職責', '師者', '老師的定義', '老師是什麼')) {
+                return '老夫在《師說》開篇即明言：「師者，所以傳道受業解惑也。」\n\n老師三大職責：\n一、傳道——傳授儒家倫理綱常與修身之道；\n二、受業——教授經典學業（「受」通「授」，為通假字）；\n三、解惑——解答道義與學業上的疑難困惑。\n\n此三者層層遞進，「傳道」最為根本，乃老夫重新定義「師」之核心，亦是全文立論基礎。';
+            }
+
+            // ── 擇師標準 ──
+            if (has('擇師', '標準', '道之所存', '師之所存', '達者為師', '為何從師', '為什麼要有老師')) {
+                return '老夫之擇師標準，一言以蔽之：「道之所存，師之所存也。」\n\n凡懂得「道」（儒家道理）之人，不論其貴賤、長幼，皆可為吾師。文中明言：「無貴無賤，無長無少，道之所存，師之所存也。」\n\n老夫更說：「吾師道也，夫庸知其年之先後生於吾乎？」——吾學的是道理，哪管年齡大小！\n\n此標準打破了當時以官位高低、年齡長幼擇師的腐舊觀念。';
+            }
+
+            // ── 三組對比（整體）──
+            if (has('三組對比', '幾組對比', '對比論證', '對比手法', '三個對比')) {
+                return '老夫於第三至五段共設三組對比，層層批判士大夫恥於從師之陋習：\n\n【第一組·第三段】古之聖人 vs 今之眾人\n古聖才智遠超常人，猶且從師；今人遠不及聖人，卻恥學於師。\n→ 結論：「聖益聖，愚益愚」\n\n【第二組·第四段】愛子擇師 vs 自身恥師\n為子弟請師學句讀，自己卻恥於拜師解大惑。\n→ 結論：「小學而大遺，吾未見其明也」\n\n【第三組·第五段】百工相師 vs 士大夫聚笑\n百工不恥互相學習；士大夫一聽「師」「弟子」便群聚嘲笑。\n→ 結論：「今其智乃反不能及，其可怪也歟！」\n\n三組力度遞增，諷刺愈來愈深！';
+            }
+
+            // ── 第一組對比 ──
+            if (has('古之聖人', '今之眾人', '聖益聖', '愚益愚', '第一組', '猶且', '古聖今眾')) {
+                return '第一組對比見於第三段，以「古之聖人」對比「今之眾人」：\n\n古之聖人：才智遠超常人，猶且從師請教——「猶且從師而問焉」；\n今之眾人：才智遠不及聖人，卻以從師為恥——「恥學於師」。\n\n結論：「是故聖益聖，愚益愚。」\n\n「猶且」是關鍵副詞，意為「尚且、還」，突出對比的強烈。\n聖人之所以更聖明，愚人之所以更愚昧，根源皆在「是否願意從師」。';
+            }
+
+            // ── 第二組對比 ──
+            if (has('愛子擇師', '童子之師', '小學而大遺', '第二組', '第四段', '自身恥師', '句讀')) {
+                return '第二組對比見於第四段，揭示士大夫自相矛盾：\n\n他們為子弟請老師學「句讀」（文章斷句停頓），自己卻恥於拜師解答大疑惑。\n\n老夫批評：「句讀之不知，惑之不解，或師焉，或不焉，小學而大遺，吾未見其明也。」\n\n「小學」=學句讀等細微知識；「大遺」=放棄了傳道解惑的大道理。\n\n此段亦含重要句式：\n• 賓語前置：「句讀之不知，惑之不解」\n  正常語序：不知句讀，不解惑\n• 「童子之師」非老夫所謂傳道之師，只是教文字句讀而已。';
+            }
+
+            // ── 第三組對比 ──
+            if (has('百工', '巫醫', '樂師', '士大夫', '不齒', '羣聚而笑', '第三組', '第五段', '位卑', '官盛', '近諛', '不恥相師')) {
+                return '第三組對比見於第五段，以「百工之人」對比「士大夫之族」：\n\n百工（巫醫、樂師、各種工匠）不恥互相學習——「不恥相師」；\n士大夫一聽有人稱「師」「弟子」，便「羣聚而笑之」。\n\n士大夫的心態：「位卑則足羞，官盛則近諛」\n——拜地位低者為師感羞恥，拜官位高者又近於阿諛。\n\n老夫諷刺結語：「今其智乃反不能及，其可怪也歟！」\n\n「不齒」意為不屑與之並列。士大夫輕視百工，如今智慧反不如他們，豈不可笑！';
+            }
+
+            // ── 孔子 / 聖人無常師 ──
+            if (has('孔子', '聖人無常師', '無常師', '郯子', '萇弘', '師襄', '老聃', '三人行', '第六段')) {
+                return '老夫在第六段以孔子為例，論證「聖人無常師」：\n\n孔子拜郯子（學官制）、萇弘（學音律）、師襄（學琴）、老聃（學禮）為師。這些人賢能均不及孔子，孔子卻虛心請教。\n\n孔子曰：「三人行，則必有我師。」\n（引自《論語·述而》；「三人」為虛數，泛指多人，並非剛好三人。）\n\n老夫引此例的目的：連至聖先師孔子亦無固定老師，今日士大夫有何資格恥於拜師？\n以歷史權威人物作例證，論證力度最強，置於三組對比之後，畫龍點睛。';
+            }
+
+            // ── 術業有專攻 / 師生關係 ──
+            if (has('術業有專攻', '術業', '聞道有先後', '弟子不必不如師', '師生關係', '師不必賢')) {
+                return '老夫在第六段末總結師生之相對關係：\n\n「是故弟子不必不如師，師不必賢於弟子，聞道有先後，術業有專攻，如是而已。」\n\n要點：\n• 「聞道有先後」——理解道理有早有晚，先懂者可為師；\n• 「術業有專攻」——各人在不同領域各有專長；\n• 師生關係是相對的，達者即可為師，非由年齡或地位決定。\n\n此句呼應第二段「道之所存，師之所存也」，是全文論證的收結，亦是 DSE 最常考的默書句之一！';
+            }
+
+            // ── 李蟠 / 寫作緣由 ──
+            if (has('李蟠', '寫作緣由', '貽', '嘉', '古道', '第七段', '寫作動機', '不拘於時', '為何寫')) {
+                return '老夫寫《師說》，乃為贈送年輕學生李蟠。\n\n李蟠，年僅十七歲，喜愛古文，六藝經傳皆通習之。最難得的是，他「不拘於時，學於余」——不受當時士大夫恥於從師的風氣束縛，主動向老夫請教。\n\n「余嘉其能行古道，作《師說》以貽之。」\n• 「嘉」——讚賞、嘉許；\n• 「貽」——贈送；\n• 「不拘於時」——被動句，「於」表被動，即不被時俗所束縛。\n\n第七段點明寫作動機，與首段「古之學者必有師」呼應，首尾貫通。';
+            }
+
+            // ── 韓愈生平 / 古文運動 ──
+            if (has('韓愈', '古文運動', '唐宋八大家', '柳宗元', '文起八代', '昌黎', '退之', '生平', '時代背景', '寫作背景')) {
+                return '老夫名愈，字退之，自號昌黎先生，唐代人。\n\n老夫與柳宗元同為「古文運動」的核心倡導者，主張恢復先秦兩漢簡練樸實的散文傳統，反對當時盛行、講求對仗聲律的駢文。\n\n後世蘇軾稱讚老夫：「文起八代之衰，道濟天下之溺。」\n老夫被列為「唐宋八大家」之首。\n\n寫作《師說》的時代背景：唐代士大夫深受魏晉門第觀念影響，以拜師為恥。老夫藉此文大力批判此陋習，宣揚尊師重道，並以贈李蟠為契機公開表態。';
+            }
+
+            // ── 古今異義 ──
+            if (has('古今異義', '古義', '今義', '學者古', '所以古', '句讀古', '小學古今', '從而古')) {
+                return '《師說》DSE 必考古今異義詞，老夫逐一說明：\n\n1.「學者」\n古義：求學的人\n今義：學術專家、學術研究者\n\n2.「所以」\n古義：用來……的（表工具或憑藉）\n今義：因果連詞\n例：「師者，所以傳道受業解惑也」\n\n3.「句讀」\n古義：文章的斷句停頓之處\n今義：語句（較少獨立使用）\n\n4.「小學」\n古義：學習句讀等細微知識\n今義：初等教育學校\n\n5.「從而」\n古義：跟從（他），並且\n今義：因此（表因果）\n\n遇到這些詞，切勿以今義作解，否則失分！';
+            }
+
+            // ── 通假字 ──
+            if (has('通假字', '受通授', '不通否', '通假')) {
+                return '《師說》中有兩個通假字，DSE 必考：\n\n1.「受業」中的「受」通「授」\n意思：「授」即傳授、教授。\n句子：「師者，所以傳道受業解惑也」\n（即「傳授學業」之意）\n\n2.「或不焉」中的「不」通「否」\n意思：否定，即「不從師」。\n句子：「或師焉，或不焉」\n（意為「有些人從師學習，有些人不」）\n\n記憶方法：「受」在傳授語境 = 「授」；「不」在表選擇的句末 = 「否」。';
+            }
+
+            // ── 詞類活用 ──
+            if (has('詞類活用', '意動用法', '意動', '恥學', '孔子師郯', '吾師道', '下聖人', '聖益聖愚', '活用', '名詞作動詞', '使動')) {
+                return '《師說》詞類活用是 DSE 高頻考點，老夫整理如下：\n\n【意動用法（以……為……）】\n• 「恥學於師」——「恥」形容詞意動：以從師為恥\n• 「孔子師郯子」——「師」名詞意動：以郯子為師\n• 「吾從而師之」——「師」名詞意動：以之為師\n• 「位卑則足羞」——「羞」形容詞意動：以……為羞\n\n【名詞作動詞】\n• 「吾師道也」——「師」：學習（道理）\n• 「君子不齒」——「齒」：並列、提及\n\n【方位名詞作動詞】\n• 「其下聖人也亦遠矣」——「下」：低於、不及\n\n【形容詞作名詞】\n• 「聖益聖，愚益愚」——第一個「聖」「愚」：聖人、愚人';
+            }
+
+            // ── 判斷句 ──
+            if (has('判斷句', '師者所以', '者所以也')) {
+                return '《師說》中判斷句的典型標誌是「……者，……也」：\n\n1.「師者，所以傳道受業解惑也。」\n→「……者，所以……也」為典型判斷句，定義老師的職責。\n\n2.「道之所存，師之所存也。」\n→以「……也」結尾，判斷擇師的唯一標準。\n\n這兩句是《師說》最核心的論點句，亦是 DSE 默書和句式分析的必考題，後生務必熟記！';
+            }
+
+            // ── 被動句 ──
+            if (has('被動句', '不拘於時', '於表被動', '「於」')) {
+                return '《師說》被動句的標誌是「於」字：\n\n「不拘於時，學於余。」\n\n此句兩個「於」字含意截然不同：\n• 第一個「於」——表被動：不被當時恥於從師的風氣所束縛；\n• 第二個「於」——表對象：向我（韓愈）學習。\n\n判斷「於」是否表被動的方法：若「於」後的事物是動作的施事者（執行者），則「於」表被動。\n「時」（時俗）是「束縛」這個動作的施事者，故「不拘於時」為被動句。';
+            }
+
+            // ── 倒裝句 / 賓語前置 ──
+            if (has('倒裝', '賓語前置', '句讀之不知', '惑之不解', '「之」的作用', '之字')) {
+                return '《師說》最重要的賓語前置句：\n\n「句讀之不知，惑之不解」\n\n正常語序：不知句讀，不解惑\n倒裝原因：「之」是賓語前置的結構標誌，將賓語（句讀、惑）提前至動詞前，作強調之用。\n\n「之」字在本文有多種用法（DSE 重點）：\n• 取消句子獨立性：「道之所存」「師道之不傳」\n• 賓語前置標誌：「句讀之不知」\n• 代詞（他/它）：「授之書」（之 = 童子）\n• 結構助詞「的」：「古之學者」';
+            }
+
+            // ── 狀語後置 ──
+            if (has('狀語後置', '學於余', '介詞結構後置', '生乎吾前', '介賓後置')) {
+                return '《師說》狀語後置句（介詞結構後置）：\n\n1.「學於余」\n正常語序：於余學（向我學習）\n→ 介詞短語「於余」後置於動詞「學」之後。\n\n2.「生乎吾前」\n正常語序：乎吾前生（在我之前出生）\n→ 「乎」相當於「於」，「乎吾前」後置。\n\n3.「師不必賢於弟子」\n正常語序：師不必於弟子賢\n→ 介詞短語「於弟子」後置。\n\n翻譯時須注意調整語序，把後置的介詞短語移回動詞前。';
+            }
+
+            // ── 庸 / 虛詞 ──
+            if (has('庸', '夫庸知', '庸……乎', '虛詞', '乎字')) {
+                return '「夫庸知其年之先後生於吾乎？」\n\n「庸……乎」是文言固定反問句式，意思是「哪管……呢？」「豈需知道……呢？」\n\n「庸」作副詞，表反問語氣，相當於「豈」「難道」「哪裡」。\n\n整句意思：我學的是道理，哪裡需要管他年齡比我大還是小呢？\n\n此句進一步闡釋「道之所存，師之所存」——擇師只問是否懂道，不問年齡高低，語氣強而有力。';
+            }
+
+            // ── 其字用法 ──
+            if (has('其字', '「其」', '其皆出', '其可怪', '其為惑', '其字用法')) {
+                return '「其」字在《師說》中有多種用法，老夫整理如下：\n\n1. 代詞（他/他們/它）\n「其聞道也固先乎吾」——他懂得道理\n\n2. 副詞——推測語氣（大概）\n「其皆出於此乎」——大概都是出於這個原因吧\n\n3. 副詞——反問語氣（難道）\n「其可怪也歟！」——難道不是很奇怪嗎！\n\n4. 指示代詞（那些）\n「今之眾人，其下聖人也亦遠矣」——那些今天的眾人\n\n「其」字是重要虛詞考點，需結合語境判斷，DSE 常以選擇題形式考查。';
+            }
+
+            // ── 文章結構 ──
+            if (has('文章結構', '結構', '論證結構', '全文', '文章脈絡', '七段', '段落大意', '各段')) {
+                return '老夫《師說》全文七段，結構嚴密：\n\n第一段：正面立論\n提出中心論點「古之學者必有師」，定義老師職責，說明從師必要性。\n\n第二段：提出擇師標準\n「道之所存，師之所存也」，不論貴賤長幼，以道為唯一標準。\n\n第三至五段：三組對比批判\n批判士大夫「恥學於師」的不良風氣，層層遞進，力度漸強。\n\n第六段：舉例申論\n引孔子無常師之例，論證「聞道有先後，術業有專攻」。\n\n第七段：交代寫作緣由\n讚許李蟠能行古道，點明動機，與首段呼應。\n\n整體論證邏輯：立論 → 對比破立 → 歷史舉例 → 交代動機。';
+            }
+
+            // ── 嗟乎 / 師道不傳 ──
+            if (has('嗟乎', '師道之不傳', '不傳', '感嘆', '第三段', '感情')) {
+                return '老夫在第三段以「嗟乎！」開篇，表達對從師風尚衰落的沉痛感慨：\n\n「嗟乎！師道之不傳也久矣！欲人之無惑也難矣！」\n\n「嗟乎」是感歎詞，表痛心惋惜。\n連用兩個感嘆句，「之」字皆用於主謂之間，取消句子獨立性。\n\n第三段的感情色彩：由理性論述轉為感情抒發，奠定批判基調。\n\n老夫痛心師道衰落，並以「古之聖人」與「今之眾人」作對比，有理有據地揭示問題根源。';
+            }
+
+            // ── DSE 考試重點 ──
+            if (has('DSE', '考試', '溫習重點', '必考', '備考', '考試重點', '複習')) {
+                return '老夫為後生整理《師說》DSE 核心考點：\n\n【論旨與論點】\n• 中心論點：古之學者必有師\n• 老師職責：傳道、受業、解惑\n• 擇師標準：道之所存，師之所存也\n\n【三組對比】（最常考）\n古聖 vs 今眾 → 聖益聖愚益愚\n愛子擇師 vs 身恥師 → 小學而大遺\n百工相師 vs 士大夫聚笑 → 智反不能及\n\n【文言知識】\n• 古今異義：學者、所以、句讀、小學\n• 通假字：受→授、不→否\n• 詞類活用：恥（意動）、師（意動/名動）、下（名動）\n• 判斷句、被動句、賓語前置、狀語後置\n\n【默書金句】\n• 師者，所以傳道受業解惑也。\n• 道之所存，師之所存也。\n• 弟子不必不如師……術業有專攻，如是而已。\n\n建議到本站「測驗」「默書」「閃卡」分頁逐一練習！';
+            }
+
+            // ── 默書 / 背誦 ──
+            if (has('默寫', '默書', '背誦', '熟記', '金句')) {
+                return '後生想熟記《師說》金句，老夫建議優先掌握以下 5 句核心：\n\n1.「師者，所以傳道受業解惑也。」\n（定義老師職責，判斷句）\n\n2.「是故無貴無賤，無長無少，道之所存，師之所存也。」\n（擇師標準，全文核心）\n\n3.「嗟乎！師道之不傳也久矣！」\n（感嘆從師風尚衰落）\n\n4.「小學而大遺，吾未見其明也。」\n（批判士大夫自相矛盾）\n\n5.「弟子不必不如師，師不必賢於弟子，聞道有先後，術業有專攻，如是而已。」\n（師生相對關係的總結）\n\n本站「默書」分頁有 15 句逐字核對練習，建議多加練習！';
+            }
+
+            // ── 預設回應 ──
+            return `後生問及「${q.length > 15 ? q.substring(0, 15) + '……' : q}」，老夫細想一番。\n\n《師說》涵蓋以下重要考點，不知爾之疑問屬於哪一方面？\n\n• 老師職責（傳道受業解惑）\n• 擇師標準（道之所存，師之所存）\n• 三組對比論證（第三至五段）\n• 孔子無常師的例證（第六段）\n• 古今異義、通假字、詞類活用\n• 判斷句、被動句、賓語前置\n• 文章結構與寫作緣由\n\n可直接輸入具體問題，如「判斷句有哪些」「恥字如何活用」「第一組對比說明什麼」，老夫必盡力解答！`;
+        }
+
+        function generateAIExamNotes() {
+            const noteContent = `
+                <div class="space-y-4 font-serif">
+                    <h4 class="text-lg font-bold text-indigo-900 border-b pb-2">一、 文章核心論點與定義</h4>
+                    <p><b>1. 中心論點：</b>古之學者必有師（開門見山）。</p>
+                    <p><b>2. 老師職責：</b>傳道（儒家綱常）、受業（講授經書）、解惑（解答疑難）。</p>
+                    <p><b>3. 擇師標準：</b>道之所存，師之所存也（達者為師，不計貴賤長少）。</p>
+
+                    <h4 class="text-lg font-bold text-indigo-900 border-b pb-2">二、 經典三組對比（DSE 必考重點）</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><b>對比 1：</b>古之聖人（從師而問） vs 今之眾人（恥學於師） -> 導出「聖益聖，愚益愚」。</li>
+                        <li><b>對比 2：</b>愛子擇師（授之句讀） vs 於其身也（恥師焉） -> 導出「小學而大遺」。</li>
+                        <li><b>對比 3：</b>百工之人（不恥相師） vs 士大夫之族（羣聚而笑） -> 導出「智反不能及」。</li>
+                    </ul>
+
+                    <h4 class="text-lg font-bold text-indigo-900 border-b pb-2">三、 必考文言句式與詞類活用</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><b>判斷句：</b>師者，所以傳道受業解惑也。</li>
+                        <li><b>倒裝句（賓語前置）：</b>句讀之不知，惑之不解（不知句讀，不解惑）。</li>
+                        <li><b>被動句：</b>不拘於時（不受當時恥於從師的風氣限制）。</li>
+                        <li><b>意動用法：</b>恥學於師（以……為恥）、孔子師郯子（以……為師）。</li>
+                    </ul>
+                </div>
+            `;
+            document.getElementById('aiNoteContent').innerHTML = noteContent;
+            document.getElementById('aiNoteModal').classList.remove('hidden');
+        }
+
+        function closeAINoteModal() {
+            document.getElementById('aiNoteModal').classList.add('hidden');
+        }
+
+        // ==========================================
+        // Phase 3 勳章榜邏輯
+        // ==========================================
+        function renderBadges() {
+            const grid = document.getElementById('badgesGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            let unlockedCount = 0;
+
+            badgeList.forEach(b => {
+                const isUnlocked = b.req(currentScore, streakDays, completedDictations);
+                if (isUnlocked) unlockedCount++;
+
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-xl border ${isUnlocked ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-300 shadow-sm' : 'bg-slate-100 border-slate-200 opacity-60'} transition flex items-center gap-3`;
+                card.innerHTML = `
+                    <div class="text-3xl ${isUnlocked ? '' : 'grayscale'}">${b.icon}</div>
+                    <div>
+                        <div class="font-bold text-sm ${isUnlocked ? 'text-amber-900' : 'text-slate-500'} flex items-center gap-1.5">
+                            ${b.title}
+                            ${isUnlocked ? '<span class="bg-emerald-500 text-white text-[10px] px-1.5 py-0.2 rounded font-bold">已解鎖</span>' : ''}
+                        </div>
+                        <div class="text-xs text-slate-500 mt-0.5">${b.desc}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            document.getElementById('badgeCount').innerText = `${unlockedCount} / ${badgeList.length}`;
+        }
+
+        // ==========================================
+        // 錯題本邏輯
+        // ==========================================
+        function addToWrongBook(item) {
+            const exists = wrongBook.some(w => w.question === item.question && w.userAns === item.userAns);
+            if (!exists) {
+                wrongBook.unshift(item);
+                localStorage.setItem('shishuo_wrong_book', JSON.stringify(wrongBook));
+                updateWrongBadge();
+                renderWrongBook();
+            }
+        }
+
+        function updateWrongBadge() {
+            const badge = document.getElementById('wrongBadge');
+            if (wrongBook.length > 0) {
+                badge.innerText = wrongBook.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function renderWrongBook() {
+            const container = document.getElementById('wrongContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (wrongBook.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-400">🎉 太棒了！目前沒有任何錯題紀錄！</div>`;
+                return;
+            }
+
+            wrongBook.forEach((w, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl border border-rose-200 shadow-sm space-y-2";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded">
+                            ${w.type === 'quiz' ? '選擇題錯題' : '默書錯題'}
+                        </span>
+                        <button onclick="removeWrongItem(${idx})" class="text-xs text-slate-400 hover:text-rose-600">🗑 移除</button>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-sm">${w.question}</h4>
+                    <div class="text-xs space-y-1 bg-slate-50 p-3 rounded">
+                        <div class="text-rose-600">❌ 你的答案：${escapeHtml(w.userAns)}</div>
+                        <div class="text-emerald-700 font-bold">✅ 正確答案：${escapeHtml(w.correctAns)}</div>
+                        ${w.exp ? `<div class="text-slate-500 mt-1">💡 說明：${w.exp}</div>` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function removeWrongItem(idx) {
+            wrongBook.splice(idx, 1);
+            localStorage.setItem('shishuo_wrong_book', JSON.stringify(wrongBook));
+            updateWrongBadge();
+            renderWrongBook();
+            renderBadges();
+        }
+
+        function clearWrongBook() {
+            if (confirm("確定要清空所有錯題紀錄嗎？")) {
+                wrongBook = [];
+                localStorage.setItem('shishuo_wrong_book', JSON.stringify(wrongBook));
+                updateWrongBadge();
+                renderWrongBook();
+                renderBadges();
+            }
+        }
+
+        // ==========================================
+        // 歷史人物知識卡
+        // ==========================================
+        const historianData = {
+            tanzi: {
+                icon: '🦅', name: '郯子', period: '春秋時代・魯國・郯國國君',
+                desc: '<p>郯子是春秋時代郯國的國君，以博學多聞、精通古代官制和禮儀著稱。</p><p>《左傳》記載，孔子曾親自向郯子請教古代少皞氏的官制（以鳥名命官的制度），這正是「聖人無常師」的具體體現。</p>',
+                rel: '孔子向郯子請教古代少皞氏官制。郯子的賢能雖不及孔子，孔子仍虛心求教，示範了「道之所存，師之所存」——不計地位高低，只看對方是否懂得特定的「道」。'
+            },
+            changhong: {
+                icon: '🎵', name: '萇弘', period: '春秋時代・周朝大夫',
+                desc: '<p>萇弘是周朝的大臣，精通音律、天文與占星，被視為音樂方面的權威。他服務於周敬王，後因政治事件遭到殺害。</p><p>傳說萇弘死後，他的血化為碧玉，「萇弘化碧」因此成為後世的典故，比喻忠貞之氣不滅。</p>',
+                rel: '孔子向萇弘學習音律與樂理知識。萇弘在音樂造詣上有獨特專長，孔子主動請益，正是「術業有專攻」——各人在自己的專業領域各有所長。'
+            },
+            shixiang: {
+                icon: '🎸', name: '師襄', period: '春秋時代・衛國樂官',
+                desc: '<p>師襄是衛國著名的樂師，精通古琴演奏，後人尊稱他為「師襄子」。他是孔子音樂學習的重要老師之一。</p><p>《史記·孔子世家》記載孔子向師襄子學琴，苦練一首曲子直至能體悟到作曲者（相傳是文王）的精神境界，展現了孔子虛心好學的精神。</p>',
+                rel: '孔子向師襄學習琴藝。師襄雖為樂官，身份不如孔子尊貴，孔子仍拜其為師，體現「無貴無賤，無長無少，道之所存，師之所存也」。'
+            },
+            laodian: {
+                icon: '📖', name: '老聃（老子）', period: '春秋時代・道家創始人',
+                desc: '<p>老聃即老子，道家學派的創始人，著有《道德經》（又稱《老子》）。他曾任周朝的守藏室之史（管理典籍的官員），博學廣識，尤其精通禮制與歷史。</p><p>「天下皆知美之為美，斯惡已；皆知善之為善，斯不善已」——《道德經》中的辯證思想影響深遠。</p>',
+                rel: '孔子曾多次向老子請教禮制與為人之道。據《禮記》及《史記》記載，孔子問禮於老聃，感歎老子如龍般深不可測。儒道雖有分野，孔子仍虛心向老子求教，展現了「聖人無常師」的博學精神。'
+            }
+        };
+
+        function showHistorian(key) {
+            const d = historianData[key];
+            if (!d) return;
+            document.getElementById('hModalIcon').textContent = d.icon;
+            document.getElementById('hModalName').textContent = d.name;
+            document.getElementById('hModalPeriod').textContent = d.period;
+            document.getElementById('hModalDesc').innerHTML = d.desc;
+            document.getElementById('hModalRel').textContent = d.rel;
+            document.getElementById('historianModal').classList.remove('hidden');
+        }
+
+        function closeHistorianModal() {
+            document.getElementById('historianModal').classList.add('hidden');
+        }
+
+        // ==========================================
+        // 閃卡已掌握 / 未掌握 系統
+        // ==========================================
+        let cardMasteryMap = JSON.parse(localStorage.getItem('shishuo_mastery') || '{}');
+
+        function markCardKnown() {
+            cardMasteryMap[currentCardIdx] = 'known';
+            localStorage.setItem('shishuo_mastery', JSON.stringify(cardMasteryMap));
+            updateMasteryStatus();
+            setTimeout(nextCard, 300);
+        }
+
+        function markCardUnknown() {
+            cardMasteryMap[currentCardIdx] = 'unknown';
+            localStorage.setItem('shishuo_mastery', JSON.stringify(cardMasteryMap));
+            updateMasteryStatus();
+            setTimeout(nextCard, 300);
+        }
+
+        function updateMasteryStatus() {
+            const knownCount = Object.values(cardMasteryMap).filter(v => v === 'known').length;
+            const unknownCount = Object.values(cardMasteryMap).filter(v => v === 'unknown').length;
+            const total = flashcardData.length;
+            const el = document.getElementById('masteryStatus');
+            if (el) {
+                el.innerHTML = `👍 已掌握：<b class="text-blue-700">${knownCount}</b> 張 ／ 👎 未掌握：<b class="text-rose-600">${unknownCount}</b> 張 ／ ⬜ 未評估：${total - knownCount - unknownCount} 張`;
+            }
+        }
+
+        // ==========================================
+        // 概念填充題資料（白話文關鍵概念）
+        // ==========================================
+        const clozeData = [
+            {
+                id:'c1',
+                q:'韓愈開篇指出老師有三項職責：傳授儒家的___（道義）、教授___（學業知識），以及解答學生的___（疑難困惑）。',
+                blanks:['道義', '學業', '疑惑'],
+                hint:'「師者，所以傳道受業解惑也。」',
+                answers:['道義（傳儒家道義）', '學業（受業即教授學業）', '疑惑（解惑即解答疑難）']
+            },
+            {
+                id:'c2',
+                q:'韓愈認為從師的必要性在於：人並非生下來就___（什麼），因此人人都必然有___（什麼），所以不得不從師。',
+                blanks:['甚麼都懂', '疑惑'],
+                hint:'「人非生而知之者，孰能無惑？」',
+                answers:['甚麼都懂（知之＝什麼都懂）', '疑惑（惑＝疑難困惑）']
+            },
+            {
+                id:'c3',
+                q:'韓愈主張擇師的唯一標準是對方是否掌握「___」（什麼），而非看對方的___或___（兩個社會條件）。',
+                blanks:['道', '年齡', '地位'],
+                hint:'「是故無貴無賤，無長無少，道之所存，師之所存也。」',
+                answers:['道（儒家道義）', '年齡（長幼）', '地位（貴賤）']
+            },
+            {
+                id:'c4',
+                q:'第一組對比：古代聖人才智遠超常人，尚且虛心___（做什麼）；今日眾人才智遠不及聖人，卻以___（做什麼）為恥。結論是：從師則越來越___，恥師則越來越___。',
+                blanks:['從師學習', '向老師學習', '聰明睿智', '愚昧無知'],
+                hint:'「古之聖人……猶且從師而問焉；今之眾人……而恥學於師。是故聖益聖，愚益愚。」',
+                answers:['從師學習（虛心求教）', '向老師學習（恥學於師）', '聰明睿智（聖益聖）', '愚昧無知（愚益愚）']
+            },
+            {
+                id:'c5',
+                q:'第二組對比：士大夫為子弟請師學習___（什麼小事），卻對自己的___（什麼大事）恥於從師，犯了「___而大遺」的矛盾。',
+                blanks:['斷句（句讀）', '思想疑惑', '小學'],
+                hint:'「小學而大遺，吾未見其明也。」',
+                answers:['斷句（句讀）＝學習文章斷句的小事', '思想疑惑（惑之不解）', '小學（重視小節）']
+            },
+            {
+                id:'c6',
+                q:'第三組對比：巫醫樂師百工等人不以互相___（做什麼）為恥；士大夫聽到有人稱師，便群聚___（做什麼）。韓愈感嘆士大夫的智慧反不及___（哪些人）。',
+                blanks:['學習', '嘲笑', '巫醫樂師百工'],
+                hint:'「今其智乃反不能及，其可怪也歟！」',
+                answers:['學習（相師＝互相學習）', '嘲笑（群聚而笑之）', '巫醫樂師百工（下層工匠）']
+            },
+            {
+                id:'c7',
+                q:'韓愈以孔子為例，說孔子曾向___、___、___、___四人學習，又引用孔子名言「三人行，則必有我___」，目的是用___的例子支持「達者為師」的觀點。',
+                blanks:['郯子', '萇弘', '師襄', '老聃', '師', '聖人'],
+                hint:'「孔子師郯子、萇弘、師襄、老聃。」',
+                answers:['郯子', '萇弘', '師襄', '老聃', '師（三人行必有我師）', '聖人（以孔子為例）']
+            },
+            {
+                id:'c8',
+                q:'韓愈提出新的師生觀念：弟子不一定___（比誰差），老師不一定___（比誰強）；重要的是誰先___（接觸了什麼），以及各人在術業上有各自的___（什麼）。',
+                blanks:['不如老師', '勝於弟子', '接觸道義', '專長'],
+                hint:'「是故弟子不必不如師，師不必賢於弟子，聞道有先後，術業有專攻，如是而已。」',
+                answers:['不如老師（不必不如師）', '勝於弟子（不必賢於弟子）', '接觸道義（聞道有先後）', '專長（術業有專攻）']
+            },
+            {
+                id:'c9',
+                q:'李蟠是一位___（年齡）歲的少年，他喜歡___（哪個時代）的文章，並不___（做什麼），敢向韓愈求學，因此韓愈特地___（做了什麼）贈予他。',
+                blanks:['十七', '古代（先秦兩漢）', '受時俗束縛', '寫《師說》'],
+                hint:'「李氏子蟠，年十七……不拘於時，學於余。余嘉其能行古道，作《師說》以貽之。」',
+                answers:['十七（年十七）', '古代先秦兩漢（六藝經傳）', '受時俗束縛（不拘於時）', '寫《師說》（作《師說》以貽之）']
+            },
+            {
+                id:'c10',
+                q:'韓愈寫《師說》的社會背景是：當時士大夫盛行___（什麼風氣），導致「師道之不傳也___」。韓愈希望藉此文批判這種___（什麼）陋習，重新推廣___（什麼）的風氣。',
+                blanks:['恥於從師', '久矣', '恥於從師', '尊師重道'],
+                hint:'「師道之不傳也久矣！欲人之無惑也難矣！」',
+                answers:['恥於從師（士大夫恥師）', '久矣（師道衰落已久）', '恥於從師（批判恥師風氣）', '尊師重道（重振師道）']
+            }
+        ];
+
+        let clozeScored = new Set(JSON.parse(localStorage.getItem('shishuo_cloze_scored2') || '[]'));
+
+        function renderCloze() {
+            const container = document.getElementById('clozeContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            clozeData.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3';
+                card.id = `clozecard-${item.id}`;
+
+                // Build question HTML with blank inputs
+                let inputIdx = 0;
+                const qHTML = item.q.replace(/___/g, () => {
+                    const id = `cloze-${item.id}-${inputIdx++}`;
+                    return `<input id="${id}" type="text" placeholder="填寫概念" class="inline-block min-w-[5rem] w-auto text-center border-b-2 border-emerald-400 bg-emerald-50 text-emerald-800 font-bold text-sm px-2 py-0.5 mx-1 focus:outline-none focus:border-emerald-700 rounded-sm">`;
+                });
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded shrink-0">第 ${idx+1} 題</span>
+                        ${clozeScored.has(item.id) ? '<span class="bg-emerald-500 text-white text-xs font-bold px-2 py-0.5 rounded">✅ 已得分</span>' : ''}
+                    </div>
+                    <p class="text-sm text-slate-800 leading-relaxed">${qHTML}</p>
+                    <p class="text-xs text-slate-500 leading-snug">原文提示：<span class="font-serif text-indigo-700">${escapeHtml(item.hint)}</span></p>
+                    <div class="flex gap-2 flex-wrap">
+                        <button onclick="checkSingleCloze('${item.id}')" class="px-4 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-lg hover:bg-emerald-700 transition">核對答案</button>
+                        <button onclick="resetSingleCloze('${item.id}')" class="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-200 transition">重置</button>
+                    </div>
+                    <div id="clozeresult-${item.id}" class="hidden"></div>`;
+                container.appendChild(card);
+            });
+        }
+
+        function checkSingleCloze(cid) {
+            const item = clozeData.find(c => c.id === cid);
+            if (!item) return;
+            const resultEl = document.getElementById(`clozeresult-${cid}`);
+            const answersHTML = item.answers.map((ans, i) =>
+                `<div class="flex items-start gap-2 text-xs py-1 border-b border-slate-100 last:border-0">
+                    <span class="font-bold text-slate-500 shrink-0">空格 ${i+1}：</span>
+                    <span class="text-emerald-700 font-bold">${escapeHtml(ans)}</span>
+                </div>`
+            ).join('');
+            resultEl.innerHTML = `
+                <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3 space-y-1">
+                    <p class="text-xs font-bold text-emerald-800 mb-2">📋 參考答案：</p>
+                    ${answersHTML}
+                    ${!clozeScored.has(cid) ? `<button onclick="selfScoreCloze('${cid}')" class="mt-2 px-4 py-1.5 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 transition w-full">✅ 我答對了 (+10分)</button>` : '<p class="text-xs text-emerald-600 font-bold mt-2">🎉 已獲得本題分數！</p>'}
+                </div>`;
+            resultEl.classList.remove('hidden');
+        }
+
+        function selfScoreCloze(cid) {
+            if (clozeScored.has(cid)) return;
+            const item = clozeData.find(c => c.id === cid);
+            const idx = clozeData.indexOf(item) + 1;
+            addScore(10, `概念填充題第${idx}題自評正確！`);
+            clozeScored.add(cid);
+            localStorage.setItem('shishuo_cloze_scored2', JSON.stringify([...clozeScored]));
+            // Update button to scored state
+            const resultEl = document.getElementById(`clozeresult-${cid}`);
+            const btn = resultEl.querySelector('button');
+            if (btn) { btn.textContent = '🎉 已獲得本題分數！'; btn.disabled = true; btn.className = 'mt-2 px-4 py-1.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg w-full cursor-default'; }
+            // Update card header badge
+            const card = document.getElementById(`clozecard-${cid}`);
+            if (card) {
+                const headerDiv = card.querySelector('.flex.items-center');
+                if (headerDiv && !headerDiv.querySelector('.bg-emerald-500')) {
+                    headerDiv.insertAdjacentHTML('beforeend', '<span class="bg-emerald-500 text-white text-xs font-bold px-2 py-0.5 rounded">✅ 已得分</span>');
+                }
+            }
+        }
+
+        function resetSingleCloze(cid) {
+            const item = clozeData.find(c => c.id === cid);
+            if (!item) return;
+            item.blanks.forEach((_, i) => {
+                const el = document.getElementById(`cloze-${cid}-${i}`);
+                if (el) el.value = '';
+            });
+            const r = document.getElementById(`clozeresult-${cid}`);
+            if (r) r.classList.add('hidden');
+        }
+
+        // ==========================================
+        // 開放式簡答題資料與邏輯
+        // ==========================================
+        const essayData = [
+            {
+                id:'e1', level:'基礎',
+                q:'韓愈在《師說》第一、二段中，提出了哪兩個主要論點？試加以說明。',
+                framework:`【答題框架】\n論點一：老師的職責（第一段）\n→ 先說明老師的定義……\n→ 再說明從師的必要性……\n\n論點二：擇師的標準（第二段）\n→ 說明擇師的唯一標準是……\n→ 強調不計……`,
+                answer:`【完整參考答案】\n\n論點一（第一段）：老師的職責是傳道、受業、解惑。韓愈認為人非生而知之，人人皆有疑惑，因此必須從師學習。若有惑而不從師，疑惑將永遠無法解決。\n\n論點二（第二段）：擇師的唯一標準是是否掌握「道」——「道之所存，師之所存也」。不論對方的地位貴賤，不論其年齡長幼，只要懂得道理，都可以拜之為師（達者為師）。這打破了以身份地位擇師的舊觀念。`
+            },
+            {
+                id:'e2', level:'進階',
+                q:'《師說》第三至五段以三組對比批判士大夫「恥於從師」的風氣。試說明三組對比的內容及其揭示的結論。',
+                framework:`【答題框架】\n按「對比雙方 + 結論」格式逐一說明：\n\n對比一（第三段）：古之聖人 vs 今之眾人\n→ 雙方情況……\n→ 結論：……\n\n對比二（第四段）：為子擇師 vs 自身恥師\n→ 雙方情況……\n→ 結論：……\n\n對比三（第五段）：百工相師 vs 士大夫聚笑\n→ 雙方情況……\n→ 結論：……`,
+                answer:`【完整參考答案】\n\n對比一（第三段）：古代聖人才智遠超常人，尚且虛心從師請教；今日眾人才智遠不及聖人，卻以向老師學習為恥。\n結論：「是故聖益聖，愚益愚」——從師則更聖明，恥師則更愚昧。\n\n對比二（第四段）：士大夫為子弟請教老師學習句讀（文字斷句），然而對自己的大疑惑卻不肯從師請教。\n結論：「小學而大遺，吾未見其明也」——重視小節而忽略大道，自相矛盾，毫無明智可言。\n\n對比三（第五段）：巫醫樂師百工等人不以互相學習為恥；士大夫聽到有人稱師道、收弟子，便群聚嘲笑。\n結論：「今其智乃反不能及，其可怪也歟！」——士大夫輕視百工，而今智慧反不如他們，諷刺至極。`
+            },
+            {
+                id:'e3', level:'進階',
+                q:'韓愈在第六段引用孔子的例子，目的是什麼？他引用了孔子哪一句話？這對全文的論證有何作用？',
+                framework:`【答題框架】\n① 孔子的例子內容是……\n② 引用目的：用來支持哪個論點？\n③ 引用孔子名言：……\n④ 對全文論證的作用：與前文三組對比如何配合？`,
+                answer:`【完整參考答案】\n\n①孔子的例子：韓愈指出孔子曾拜郯子（學官制）、萇弘（學音律）、師襄（學琴）、老聃（學禮）為師。這些人的賢能雖不及孔子，但孔子仍虛心請教，體現「聖人無常師」的精神。\n\n②目的：以孔子這位「至聖先師」作為歷史例證，論證「達者為師，聞道有先後，術業有專攻」的論點，說明師生關係是相對的。\n\n③孔子名言：「三人行，則必有我師。」（引自《論語·述而》）\n\n④對全文的作用：前三至五段以對比批判士大夫恥師的陋習，第六段以孔子為正面例子作正面印證，以「正面立論」呼應「批判破立」，論證由批而立，結構嚴密，說服力大增。`
+            },
+            {
+                id:'e4', level:'高階',
+                q:'《師說》被認為是一篇「勇於抗俗」的文章。結合全文內容，說明韓愈「勇於抗俗」的精神如何在文章中體現。',
+                framework:`【答題框架】\n① 唐代「時俗」是什麼？（背景）\n② 韓愈如何在立論上抗俗？\n③ 韓愈如何在批判上抗俗？\n④ 韓愈如何在寫作行為本身體現抗俗？`,
+                answer:`【完整參考答案】\n\n①時俗背景：唐代士大夫深受門第觀念影響，視從師為恥辱，以稱師道、收弟子者為笑柄，社會充斥「恥學於師」之風氣。\n\n②立論抗俗：韓愈明確提出「道之所存，師之所存也」，以「道」（知識與道理）取代「地位」作為擇師標準，直接挑戰以尊卑貴賤定師生關係的舊觀念，體現思想上的勇氣。\n\n③批判抗俗：韓愈毫不留情地批評士大夫「小學而大遺」「羣聚而笑之」「其可怪也歟」，以尖銳嘲諷揭露統治階層的腐陋，在唐代的社會氛圍下，此舉需要相當的膽識。\n\n④行為上抗俗：韓愈本人公開收李蟠為弟子，並「作《師說》以貽之」，以實際行動踐行「古道」，知行合一，正是在恥師之風盛行的環境中勇於身體力行的最佳明證。`
+            }
+        ];
+
+        function renderEssay() {
+            const container = document.getElementById('essayContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            essayData.forEach((item, idx) => {
+                const levelColor = item.level === '基礎' ? 'bg-blue-100 text-blue-700' : item.level === '進階' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700';
+                const card = document.createElement('div');
+                card.className = 'bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4';
+                card.innerHTML = `
+                    <div class="flex items-center gap-2 border-b pb-3">
+                        <span class="${levelColor} text-xs font-bold px-2.5 py-1 rounded-full">${item.level}</span>
+                        <span class="text-xs text-slate-400">第 ${idx+1} 題</span>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-base leading-relaxed">${item.q}</h4>
+                    <details class="border border-amber-200 rounded-xl overflow-hidden">
+                        <summary class="p-3 bg-amber-50 text-amber-800 font-bold text-xs cursor-pointer flex items-center gap-2">💡 查看答題框架提示</summary>
+                        <div class="p-4 text-xs text-slate-700 whitespace-pre-wrap leading-relaxed bg-amber-50/50">${item.framework}</div>
+                    </details>
+                    <details class="border border-emerald-200 rounded-xl overflow-hidden">
+                        <summary class="p-3 bg-emerald-50 text-emerald-800 font-bold text-xs cursor-pointer flex items-center gap-2">📖 查看完整參考答案（建議先自己思考）</summary>
+                        <div class="p-4 text-xs text-slate-700 whitespace-pre-wrap leading-relaxed bg-emerald-50/50">${item.answer}</div>
+                    </details>`;
+                container.appendChild(card);
+            });
+        }
+
+        // ==========================================
+        // 一鍵生成筆記（含選擇模組）
+        // ==========================================
+        function openNoteSelectModal() {
+            document.getElementById('noteSelectModal').classList.remove('hidden');
+        }
+
+        function closeNoteSelectModal() {
+            document.getElementById('noteSelectModal').classList.add('hidden');
+        }
+
+        function generateSelectedNotes() {
+            closeNoteSelectModal();
+            const sections = [];
+
+            if (document.getElementById('note_zhongxin').checked) {
+                sections.push(`<h4 class="text-base font-bold text-indigo-900 border-b pb-2 mt-4">一、中心論點與老師職責</h4>
+                <p><b>中心論點：</b>古之學者必有師（開門見山）。</p>
+                <p><b>老師職責：</b>傳道（儒家綱常）· 受業（講授經書，「受」通「授」）· 解惑（解答疑難）。</p>
+                <p><b>擇師標準：</b>「道之所存，師之所存也」—— 達者為師，不論貴賤長少。</p>
+                <p><b>師生關係：</b>「弟子不必不如師，師不必賢於弟子，聞道有先後，術業有專攻，如是而已。」</p>`);
+            }
+
+            if (document.getElementById('note_duibi').checked) {
+                sections.push(`<h4 class="text-base font-bold text-indigo-900 border-b pb-2 mt-4">二、三組對比論證（DSE 必考）</h4>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><b>對比一（第三段）：</b>古之聖人（從師）vs 今之眾人（恥師） → 「聖益聖，愚益愚」</li>
+                    <li><b>對比二（第四段）：</b>愛子擇師（學句讀）vs 自身恥師（大疑惑不問）→ 「小學而大遺，吾未見其明也」</li>
+                    <li><b>對比三（第五段）：</b>百工不恥相師 vs 士大夫羣聚而笑 → 「今其智乃反不能及，其可怪也歟！」</li>
+                </ul>`);
+            }
+
+            if (document.getElementById('note_wenyan').checked) {
+                sections.push(`<h4 class="text-base font-bold text-indigo-900 border-b pb-2 mt-4">三、文言知識</h4>
+                <p><b>【通假字】</b>「受」通「授」（受業）；「不」通「否」（或不焉）</p>
+                <p><b>【古今異義】</b>學者（古：求學者）；所以（古：用來……的）；句讀（古：斷句停頓）；小學（古：學句讀）</p>
+                <p><b>【詞類活用】</b>恥（形容詞意動：以……為恥）；師（名詞意動：以……為師）；吾師道（名詞作動詞：學習）；下（名詞作動詞：低於）</p>
+                <p><b>【特殊句式】</b>判斷句：師者，所以傳道受業解惑也 ／ 倒裝句（賓語前置）：句讀之不知 ／ 被動句：不拘於時</p>`);
+            }
+
+            if (document.getElementById('note_xiuci').checked) {
+                sections.push(`<h4 class="text-base font-bold text-indigo-900 border-b pb-2 mt-4">四、修辭與論證手法</h4>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li><b>開門見山：</b>首句直接提出論點「古之學者必有師」</li>
+                    <li><b>排比：</b>傳道、受業、解惑三職責並列</li>
+                    <li><b>對比論證：</b>古聖 vs 今眾、愛子 vs 自身、百工 vs 士大夫（三組）</li>
+                    <li><b>舉例論證：</b>孔子師郯子、萇弘、師襄、老聃</li>
+                    <li><b>引用論證：</b>引《論語》「三人行，則必有我師」</li>
+                    <li><b>反問：</b>「人非生而知之者，孰能無惑？」「其可怪也歟！」</li>
+                    <li><b>對仗：</b>「位卑則足羞，官盛則近諛」</li>
+                    <li><b>頂真：</b>「聖益聖，愚益愚」（同字重複）</li>
+                </ul>`);
+            }
+
+            if (document.getElementById('note_moji').checked) {
+                sections.push(`<h4 class="text-base font-bold text-indigo-900 border-b pb-2 mt-4">五、必背金句（精選 5 句）</h4>
+                <ol class="list-decimal pl-5 space-y-1 font-serif">
+                    <li>師者，所以傳道受業解惑也。</li>
+                    <li>是故無貴無賤，無長無少，道之所存，師之所存也。</li>
+                    <li>嗟乎！師道之不傳也久矣！</li>
+                    <li>小學而大遺，吾未見其明也。</li>
+                    <li>是故弟子不必不如師，師不必賢於弟子，聞道有先後，術業有專攻，如是而已。</li>
+                </ol>`);
+            }
+
+            if (document.getElementById('note_zuozhe').checked) {
+                sections.push(`<h4 class="text-base font-bold text-indigo-900 border-b pb-2 mt-4">六、作者與背景</h4>
+                <p><b>韓愈（768–824）</b>字退之，自號昌黎先生。唐宋八大家之首。</p>
+                <p><b>古文運動：</b>與柳宗元倡導，反對駢文，提倡先秦兩漢散文傳統，文以載道。</p>
+                <p><b>蘇軾評語：</b>「文起八代之衰，道濟天下之溺。」</p>
+                <p><b>寫作背景：</b>唐代士大夫盛行門第觀念，恥於從師。韓愈贈文李蟠，公開批判此陋習，振興師道。</p>`);
+            }
+
+            const noteContent = `<div class="space-y-2 font-sans text-sm leading-relaxed">${sections.join('')}</div>`;
+            document.getElementById('aiNoteContent').innerHTML = noteContent || '<p class="text-slate-400 text-center py-8">請至少選擇一個筆記部分。</p>';
+            document.getElementById('aiNoteModal').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // 初始化新功能渲染
+        // ==========================================
+        const _origOnload = window.onload;
+        window.onload = function() {
+            if (_origOnload) _origOnload();
+            renderCloze();
+            renderEssay();
+            updateMasteryStatus();
+        };
+    </script>
+
+    <!-- 手機版底部導航欄（可左右滑動） -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+        <div class="mobile-bottom-nav-inner">
+            <button class="nav-btn active" id="mnav-study" onclick="switchTab('tab-study')">
+                <span class="icon">📘</span>
+                <span class="label">課文</span>
+            </button>
+            <button class="nav-btn" id="mnav-author" onclick="switchTab('tab-author')">
+                <span class="icon">👤</span>
+                <span class="label">背景</span>
+            </button>
+            <button class="nav-btn" id="mnav-quiz" onclick="switchTab('tab-quiz')">
+                <span class="icon">🎯</span>
+                <span class="label">選擇題</span>
+            </button>
+            <button class="nav-btn" id="mnav-dictation" onclick="switchTab('tab-dictation')">
+                <span class="icon">✍️</span>
+                <span class="label">默書</span>
+            </button>
+            <button class="nav-btn" id="mnav-flashcard" onclick="switchTab('tab-flashcard')">
+                <span class="icon">🃏</span>
+                <span class="label">閃卡</span>
+            </button>
+            <button class="nav-btn" id="mnav-cloze" onclick="switchTab('tab-cloze')">
+                <span class="icon">🔲</span>
+                <span class="label">填充</span>
+            </button>
+            <button class="nav-btn" id="mnav-essay" onclick="switchTab('tab-essay')">
+                <span class="icon">📄</span>
+                <span class="label">簡答</span>
+            </button>
+            <button class="nav-btn" id="mnav-ai" onclick="switchTab('tab-ai')">
+                <span class="icon">🤖</span>
+                <span class="label">韓愈AI</span>
+            </button>
+            <button class="nav-btn" id="mnav-badges" onclick="switchTab('tab-badges')">
+                <span class="icon">🏆</span>
+                <span class="label">勳章</span>
+            </button>
+            <button class="nav-btn" id="mnav-wrong" onclick="switchTab('tab-wrong')">
+                <span class="icon">📕</span>
+                <span class="label">錯題本</span>
+            </button>
+            <button class="nav-btn" id="mnav-text" onclick="switchTab('tab-text')">
+                <span class="icon">🗺️</span>
+                <span class="label">腦圖</span>
+            </button>
+        </div>
+    </nav>
+
+</body>
+</html>
